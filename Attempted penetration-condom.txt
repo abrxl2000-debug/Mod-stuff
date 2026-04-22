@@ -1,0 +1,41 @@
+   &lt;&lt;if $pc.attempted_penetration and !$pc.attempted_penetration.seen and $pc.has_part(&quot;penis&quot;)&gt;&gt;
+        /* reaction to penis-haver PC penetrating vagina */
+        &lt;&lt;set _partner to $encounter.pobj($pc.attempted_penetration.target)&gt;&gt;
+        You&#39;re poised to enter &lt;&lt;anonorfirstname _partner&gt;&gt;.
+        &lt;br&gt;&lt;br&gt;
+        &lt;&lt;if $pc.attempted_penetration.claim_bc&gt;&gt;
+            &lt;&lt;if $pc.attempted_penetration.believes_bc&gt;&gt;
+                &lt;&lt;highlight unbad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj believe&gt;&gt; you&#39;ve had a vasectomy.&lt;&lt;/highlight&gt;&gt;
+            &lt;&lt;else&gt;&gt;
+                &lt;&lt;highlight bad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; trust that you&#39;ve had a vasectomy.&lt;&lt;/highlight&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if $pc.attempted_penetration.reluctantly_not_use_condom&gt;&gt;
+            &lt;&lt;highlight unbad&gt;&gt;&lt;&lt;psc&gt;&gt; reluctantly &lt;&lt;conj agree&gt;&gt; to not use a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+            &lt;&lt;set _doact to true&gt;&gt;
+        &lt;&lt;elseif $pc.attempted_penetration.reluctantly_use_condom&gt;&gt;
+            &lt;&lt;highlight unbad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj agree&gt;&gt; to let you use a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+            &lt;&lt;set _doact to true&gt;&gt;
+        &lt;&lt;elseif $pc.attempted_penetration.insist_remove_condom&gt;&gt;
+            &lt;&lt;highlight bad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; want to continue with a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;&lt;set _doact to !$pc.condom&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+        &lt;&lt;elseif $pc.attempted_penetration.insist_condom&gt;&gt;
+            &lt;&lt;highlight bad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; want to continue unless you use a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;&lt;set _doact to !!$pc.condom&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+        &lt;&lt;elseif $pc.attempted_penetration.request_condom and !$pc.condom&gt;&gt;
+            &lt;&lt;highlight ungood&gt;&gt;&lt;&lt;psc&gt;&gt; would like you to use a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+            &lt;&lt;if !$pc.condom&gt;&gt;
+                &lt;&lt;button &quot;Ask not to use condom&quot; EncounterRound&gt;&gt;
+                    &lt;&lt;if setup.Pregnancy.insists_on_condom(_partner)&gt;&gt;
+                        &lt;&lt;set $pc.attempted_penetration.insist_condom to true&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $pc.attempted_penetration.reluctantly_not_use_condom to true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;/button&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+~

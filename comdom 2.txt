@@ -1,0 +1,397 @@
+<<elseif $pc.arousal() gte $pc.max_arousal()>>
+    <<set _partner to $pc.engaged_partner()>>
+    <<if $pc.arousal() gte $pc.max_arousal() and _partner and !_partner.madecumrequest>>
+        <<set _cumlocs to $pc.available_cum_locations(_partner)>>
+        <<if setup.cum_locations_includes(_cumlocs, "vagina")>>
+            <<dirtytalkcuminside _partner>>
+        <<elseif setup.cum_locations_includes(_cumlocs, "anus")>>
+            <<dirtytalkcuminsideass _partner>>
+        <<elseif !setup.cum_locations_includes(_cumlocs, "mouth") and setup.cum_locations_includes(_cumlocs, "face")>>
+            <<dirtytalkcumfacial _partner>>
+        <</if>>
+    <</if>>
+<<elseif $pc.attempted_penetration and !$pc.attempted_penetration?.seen and $pc.has_part("penis")>>
+    <<set _partner to $encounter.pobj($pc.attempted_penetration?.target)>>
+    You're poised to enter <<anonorfirstname _partner>>.
+    <<if $pc.attempted_penetration?.claim_bc>>
+        <<if $pc.attempted_penetration?.believes_bc>>
+            <<highlight unbad>><<psc>> <<conj believe>> you've had a vasectomy.<</highlight>>
+        <<else>>
+            <<highlight bad>><<psc>> <<conj "don't">> trust that you've had a vasectomy.<</highlight>>
+        <</if>>
+    <</if>>
+    <<if $pc.attempted_penetration?.reluctantly_not_use_condom>>
+        <<highlight unbad>><<psc>> reluctantly <<conj agree>> to not use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.reluctantly_use_condom>>
+        <<highlight unbad>><<psc>> <<conj agree>> to let you use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.insist_remove_condom>>
+        <<highlight bad>><<psc>> <<conj "don't">> want to continue with a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.insist_condom>>
+        <<highlight bad>><<psc>> <<conj "don't">> want to continue unless you use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.request_condom and !$pc.condom>>
+        <<highlight ungood>><<psc>> would like you to use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.request_remove_condom and ($pc.condom or _partner.condom)>>
+        <<highlight ungood>><<psc>> <<conj want>> you to remove your condom.<</highlight>>
+        <<if setup.Pregnancy.can_get_pregnant(_partner)>>
+            <<if setup.Pregnancy.on_birth_control(_partner)>>
+                <<psc>> <<conj say>> <<pss>> on the pill.
+            <<elseif setup.Pregnancy.has_iud(_partner)>>
+                <<psc>> <<conj say>> <<ps>> <<conj have>> an IUD.
+            <</if>>
+        <<elseif setup.Pregnancy.has_vasectomy(_partner)>>
+            <<psc>> <<conj say>> <<pshas>> had a vasectomy.
+        <</if>>
+    <<else>>
+        <<psc>> <<conj await>> your next move.
+    <</if>>
+<<elseif $pc.attempted_penetration and !$pc.attempted_penetration?.seen and $pc.has_part("vagina")>>
+    <<set _partner to $encounter.pobj($pc.attempted_penetration?.target)>>
+    You have <<anonorfirstname _partner>> poised to enter you.
+    <<if $pc.attempted_penetration?.claim_bc>>
+        <<if $pc.attempted_penetration?.believes_bc>>
+            <<highlight unbad>><<psc>> <<conj believe>> you're protected.<</highlight>>
+        <<else>>
+            <<highlight bad>><<psc>> <<conj "don't">> trust that you're protected.<</highlight>>
+        <</if>>
+    <</if>>
+    <<if $pc.attempted_penetration?.reluctantly_not_use_condom>>
+        <<highlight unbad>><<psc>> reluctantly <<conj agree>> to not use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.reluctantly_use_condom>>
+        <<highlight unbad>><<psc>> <<conj agree>> to use a condom<</highlight>>
+        <<if !$pc.attempted_penetration?.offered_condom && !_partner.has_condom()>>
+            , but <<ps>> <<conj "don't">> have one
+        <</if>>.
+    <<elseif $pc.attempted_penetration?.insist_remove_condom>>
+        <<highlight bad>><<psc>> really <<conj want>> to remove the condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.insist_condom>>
+        <<highlight bad>><<psc>> <<conj "don't">> want to continue unless <<ps>> can use a condom.<</highlight>>
+    <</if>>
+    <<if $pc.attempted_penetration?.request_condom and !$pc.attempted_penetration?.insist_condom>>
+        <<if !_partner.condom>>
+            <<if _partner.has_condom()>>
+                <<psc>> <<conj intend>> to use a condom.
+            <<else>>
+                <<psc>> <<conj want>> to use a condom, but <<conj "don't">> have one.
+            <</if>>
+        <<else>>
+            <<pssc>> wearing <<aoran _partner.condom>> <<= _partner.condom>>.
+        <</if>>
+    <<elseif !$pc.attempted_penetration?.request_condom and !$pc.attempted_penetration?.insist_remove_condom>>
+        <<psc>> <<conj "don't">> care to use a condom.
+        <<if setup.Pregnancy.can_get_pregnant(_partner)>>
+            <<if setup.Pregnancy.on_birth_control(_partner)>>
+                <<psc>> <<conj say>> <<pss>> on the pill.
+            <<elseif setup.Pregnancy.has_iud(_partner)>>
+                <<psc>> <<conj say>> <<ps>> <<conj have>> an IUD.
+            <</if>>
+        <<elseif setup.Pregnancy.has_vasectomy(_partner)>>
+            <<psc>> <<conj say>> <<pshas>> had a vasectomy.
+        <</if>>
+    <</if>>
+<<elseif $pc.attempted_bondage?.interrupt>>
+    <<highlight narrate-sexact-bondage>>
+        <<switch $pc.attempted_bondage.act>>
+            <<case "bind to">>
+                <<encounternamec _doer>> <<conjname _doer want>> to secure you<<furniturelabel $pc.attempted_bondage.furniture>>.
+            <<case "bind hands">>
+                <<encounternamec _doer>> <<conjname _doer want>> to bind your hands.
+            <<case "gag">>
+                <<encounternamec _doer>> <<conjname _doer want>> to gag you.
+        <</switch>>
+    <</highlight>>
+<<else>>
+<br>
+<</if>>
+</div>
+<div style="display: flex; flex-flow: row wrap; align-content:flex-start; width: 100%; height: 118px; overflow-y: scroll; border-radius: 2%; border-top: solid; background: rgb(180 100 180 / 5%); ">
+    <<set _acts to $pc.available_acts(_args[0])>>
+    <<for _act range setup.acts_keep(_acts, ["Continue", "Do Nothing", "Stop", "End", "Pull"])>>
+        <<set _actname to $pc.act_name_for(_act, _args[0])>>
+        <<set _class to setup.encounter_button_class(_act)>>
+        <<capture _act>><<highlight _class>><<button _actname "EncounterRework">><<run $pc.do_act(_act, _args[0])>><</button>><</highlight>><</capture>>
+    <</for>>
+    <<if $encounter.about_to_orgasm().length gt 0>>
+        <<set _partner to $encounter.about_to_orgasm()[0]>>
+        <<set _cumlocs to _partner.available_cum_locations($encounter.pobj(_partner.encounter_target()), true)>>
+        <<if $pc.equals(_partner.encounter_target())>>
+            <<for _j to 0; _j lt _cumlocs.length; _j++>>
+                <<set _cum to _cumlocs[_j]>>
+                <<capture _cum, _partner>><<highlight "button-sexact-cum new-size-button nokeys">><<button _cum.button "EncounterRework">><<run _partner.request_cum_location(_cum, $pc)>><</button>><</highlight>><</capture>>
+            <</for>>
+        <<else>>
+            <<set _cum to setup.randomchoice(_cumlocs)>>
+            <<run _partner.request_cum_location(_cum, $encounter.pobj(_partner.encounter_target()))>>
+        <</if>>
+    <<elseif $pc.cum_covering.mouth>>
+            <<highlight "button-sexact-cum new-size-button nokeys">><<button "Spit" "EncounterRework">><<run $pc.spit_cum()>><</button>><</highlight>>
+            <<highlight "button-sexact-cum new-size-button nokeys">><<button "Swallow" "EncounterRework">><<run $pc.swallow_cum()>><</button>><</highlight>>
+    <<elseif $pc.watersports and $pc.watersports.length gt 0>>
+        <<set _partner to $pc.engaged_partner() || $partner1>>
+        <<set _peelocs to $pc.watersports>>
+        <<if !$pc.is_pee_willing>>
+            <<capture _partner>><<highlight "button-sexact-pee new-size-button nokeys">><<button "Hold it in!" "EncounterRework">><<run $pc.maybe_resist_pee(_partner)>><</button>><</highlight>><</capture>>
+        <</if>>
+        <<for _j to 0; _j lt _peelocs.length; _j++>>
+            <<set _tpartner to _peelocs[_j].target || _partner>>
+            <<set _pee to _peelocs[_j]>>
+            <<capture _pee, _tpartner>><<highlight "button-sexact-pee new-size-button nokeys">><<button _pee.button "EncounterRework">><<run $pc.do_pee(_pee.location, _tpartner)>><</button>><</highlight>><</capture>>
+        <</for>>
+        <<run delete $pc.is_pee_willing>>
+    <<elseif $pc.arousal() gte $pc.max_arousal()>>
+        <<set _partner to $pc.engaged_partner()>>
+        <<set _cumlocs to $pc.available_cum_locations(_partner)>>
+        <<capture _partner>>
+            <<highlight "button-sexact-cum new-size-button nokeys">><<button "Hold back!" "EncounterRework">><<run $pc.maybe_resist_cum(_partner)>><</button>><</highlight>>
+        <</capture>>
+        <<for _j to 0; _j lt _cumlocs.length; _j++>>
+            <<set _cum to _cumlocs[_j]>>
+            <<capture _cum,_partner>><<highlight "button-sexact-cum new-size-button nokeys">><<button _cum.button "EncounterRework">><<run $pc.do_cum(_cum, _partner)>><</button>><</highlight>><</capture>>
+        <</for>>
+    <</if>>
+    <<if $pc.attempted_penetration and !$pc.attempted_penetration.seen and $pc.has_part("penis")>>
+        <<set _partner to $encounter.pobj($pc.attempted_penetration.target)>>
+            <<if !$pc.condom>>
+                <<highlight "button-sexact-position new-size-button nokeys">>
+                    <<button "Ask not to use condom" EncounterRework>>
+                        <<if setup.Pregnancy.insists_on_condom(_partner)>>
+                            <<set $pc.attempted_penetration.insist_condom to true>>
+                        <<else>>
+                            <<set $pc.attempted_penetration.reluctantly_not_use_condom to true>>
+                        <</if>>
+                    <</button>>
+                <</highlight>>
+            <</if>>
+            <<if !setup.Pregnancy.thinks_pc_on_bc(_partner)>>
+                <<if setup.Pregnancy.can_get_pregnant(V.pc)>>
+                    <<set _linkname to "Say you're on birth control">>
+                <<else>>
+                    <<set _linkname to "Say you've had a vasectomy">>
+                <</if>>
+                <<highlight "button-sexact-position new-size-button nokeys">>
+                    <<button _linkname EncounterRework>>
+                        <<set $pc.attempted_penetration.claim_bc to true>>
+                        <<if setup.Pregnancy.believes_pc_on_bc(_partner)>>
+                            <<set $pc.attempted_penetration?.believes_bc to true>>
+                            <<run setup.Pregnancy.told_pc_on_bc(_partner)>>
+                            <<if setup.Pregnancy.insists_on_condom(_partner)>>
+                                <<set $pc.attempted_penetration.insist_condom to true>>
+                            <<else>>
+                                <<set $pc.attempted_penetration.reluctantly_not_use_condom to true>>
+                            <</if>>
+                        <<else>>
+                            <<set $pc.attempted_penetration?.believes_bc to false>>
+                        <</if>>
+                    <</button>>
+                <</highlight>>
+            <</if>>
+            <<if $pc.attempted_penetration.request_remove_condom and ($pc.condom or _partner.condom)>>
+                <<if !$pc.condom>>
+                    <<set _doact to false>>
+                    <<highlight "button-sexact-position new-size-button nokeys">>
+                        <<button "Continue without condom" EncounterRework>>
+                            <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                            <<unset $pc.attempted_penetration?>>
+                        <</button>>
+                    <</highlight>>
+                    <<highlight "button-sexact-position new-size-button nokeys">>
+                        <<button "Ask to use condom" EncounterRework>>
+                            <<if setup.Pregnancy.reluctantly_uses_condom(_partner)>>
+                                <<set $pc.attempted_penetration?.reluctantly_use_condom to true>>
+                            <<else>>
+                                <<set $pc.attempted_penetration?.insist_remove_condom to true>>
+                            <</if>>
+                        <</button>>
+                    <</highlight>>
+                <<else>>
+                    <<highlight "button-sexact-position new-size-button nokeys">>
+                        <<button "Agree to remove condom" EncounterRework>>
+                            <<unset $pc.condom>>
+                            <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                            <<unset $pc.attempted_penetration>>
+                        <</button>>
+                    <</highlight>>
+                <</if>>
+            <<else>>
+                <<highlight "button-sexact-position new-size-button nokeys">>
+                    <<button "Continue" EncounterRework>>
+                        <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                        <<unset $pc.attempted_penetration>>
+                    <</button>>
+                <</highlight>>
+            <</if>>
+            <<if _doact>>
+                <<highlight "button-sexact-position new-size-button nokeys">>
+                    <<button "Continue" EncounterRework>>
+                        <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                        <<unset $pc.attempted_penetration>>
+                    <</button>>
+                <</highlight>>
+            <</if>>
+            <<highlight "button-sexact-position new-size-button nokeys">>
+                <<button "Withdraw" EncounterRework>>
+                    <<unset $pc.attempted_penetration>>
+                <</button>>
+            <</highlight>>
+            <<if !$pc.condom>>
+                <<if $pc.has_condom()>>
+                    <<for _condom range $pc.condom_types()>>
+                        <<capture _condom>>
+                            <<set _link to "Use " + _condom>>
+                            <<highlight "button-sexact-position new-size-button nokeys">>
+                                <<button _link EncounterRework>>
+                                    <<run $pc.wear_condom(_condom)>>
+                                    <<set $header to "You put on " + setup.a_or_an(_condom) + " " + _condom + ".">>
+                                <</button>>
+                            <</highlight>>
+                        <</capture>>
+                    <</for>>
+                <</if>>
+                <<if _partner.has_condom()>>
+                    <<highlight "button-sexact-position new-size-button nokeys">>
+                        <<button "Borrow condom" EncounterRework>>
+                            <<set _condom to _partner.condom_types()[0]>>
+                            <<run $pc.wear_condom(_condom, _partner)>>
+                            <<set $header to "You put on " + setup.a_or_an(_condom) + " " + _condom + ".">>
+                        <</button>>
+                    <</highlight>>
+                <</if>>
+            <</if>>
+        <<elseif $pc.attempted_penetration and !$pc.attempted_penetration.seen and $pc.has_part("vagina")>>
+            <<set _partner to $encounter.pobj($pc.attempted_penetration.target)>>
+            <<if _doact>>
+                <<highlight "button-sexact-position new-size-button nokeys">>
+                    <<button "Continue" EncounterRework>>
+                        <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                        <<unset $pc.attempted_penetration>>
+                    <</button>>
+                <</highlight>>
+            <<else>>
+                <<if ($pc.attempted_penetration?.request_condom and _partner.condom) or (!$pc.attempted_penetration?.request_condom and !_partner.condom)>>
+                    <<highlight "button-sexact-position new-size-button nokeys">>
+                        <<button "Continue" EncounterRework>>
+                            <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                            <<unset $pc.attempted_penetration>>
+                        <</button>>
+                    <</highlight>>
+                <</if>>
+                <<if !$pc.attempted_penetration?.insist_condom>>
+                    <<highlight "button-sexact-position new-size-button nokeys">>
+                        <<button "Go without condom" EncounterRework>>
+                            <<if !$pc.attempted_penetration.request_condom>>
+                                <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                                <<unset $pc.attempted_penetration>>
+                            <<elseif setup.Pregnancy.insists_on_condom(_partner)>>
+                                <<set $pc.attempted_penetration.insist_condom to true>>
+                            <<else>>
+                                <<set $pc.attempted_penetration.reluctantly_not_use_condom to true>>
+                            <</if>>
+                        <</button>>
+                    <</highlight>>
+                <<if !setup.Pregnancy.thinks_pc_on_bc(_partner)>>
+                    <<if setup.Pregnancy.can_get_pregnant(V.pc)>>
+                        <<set _linkname to "Say you're on birth control">>
+                    <<else>>
+                        <<set _linkname to "Say you've had a vasectomy">>
+                    <</if>>
+                    <<highlight "button-sexact-position new-size-button nokeys">>
+                        <<button _linkname EncounterRework>>
+                            <<set $pc.attempted_penetration?.claim_bc to true>>
+                            <<if setup.Pregnancy.believes_pc_on_bc(_partner)>>
+                                <<set $pc.attempted_penetration?.believes_bc to true>>
+                                <<run setup.Pregnancy.told_pc_on_bc(_partner)>>
+                                <<if !setup.Pregnancy.wants_condom(_partner)>>
+                                    <<set $pc.attempted_penetration?.request_condom to false>>
+                                <<else>>
+                                    <<if setup.Pregnancy.insists_on_condom(_partner)>>
+                                        <<set $pc.attempted_penetration?.insist_condom to true>>
+                                    <<else>>
+                                        <<set $pc.attempted_penetration?.reluctantly_not_use_condom to true>>
+                                    <</if>>
+                                <</if>>
+                            <<else>>
+                                <<set $pc.attempted_penetration?.believes_bc to false>>
+                            <</if>>
+                        <</button>>
+                    <</highlight>>
+                <</if>>
+            <</if>>
+            <<if !$pc.attempted_penetration?.insist_remove_condom>>
+                <<if _partner.has_condom()>>
+                    <<highlight "button-sexact-position new-size-button nokeys">>
+                        <<button "Have <<po _partner>> use <<pp>> condom" EncounterRework>>
+                            <<if $pc.attempted_penetration?.request_condom>>
+                                <<set _condom to _partner.condom_types()[0]>>
+                                <<run _partner.wear_condom(_condom)>>
+                                <<run _partner.remove_condom(_condom)>>
+                                <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                                <<unset $pc.attempted_penetration>>
+                            <<elseif !setup.Pregnancy.reluctantly_uses_condom(_partner)>>
+                                <<set $pc.attempted_penetration.insist_remove_condom to true>>
+                            <<else>>
+                                <<run _partner.wear_condom(_partner.condom_types()[0])>>
+                                <<set $pc.attempted_penetration?.reluctantly_use_condom to true>>
+                            <</if>>
+                        <</button>>
+                    <</highlight>>
+                <</if>>
+                <<if $pc.has_condom()>>
+                    <<for _condom range $pc.condom_types()>>
+                        <<capture _condom>>
+                            <<set _link to "Lend " + _condom>>
+                            <<highlight "button-sexact-position new-size-button nokeys">>
+                                <<button _link EncounterRework>>
+                                    <<set $pc.attempted_penetration.offered_condom to _condom>>
+                                    <<if $pc.attempted_penetration.request_condom>>
+                                        <<run _partner.wear_condom(_condom)>>
+                                        <<run $pc.remove_condom(_condom)>>
+                                        <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                                        <<unset $pc.attempted_penetration>>
+                                    <<elseif !setup.Pregnancy.reluctantly_uses_condom(_partner)>>
+                                        <<set $pc.attempted_penetration.insist_remove_condom to true>>
+                                    <<else>>
+                                        <<run _partner.wear_condom(_condom)>>
+                                        <<run $pc.remove_condom(_condom)>>
+                                        <<set $pc.attempted_penetration.reluctantly_use_condom to true>>
+                                    <</if>>
+                                <</button>>
+                            <</highlight>>
+                        <</capture>>
+                    <</for>>
+                <</if>>
+            <</if>>
+        <</if>>
+        <<highlight "button-sexact-position new-size-button nokeys">>
+            <<button "Withdraw" EncounterRework>>
+                <<unset $pc.attempted_penetration>>
+            <</button>>
+        <</highlight>>
+    <<elseif $pc.attempted_bondage?.interrupt>>
+        <<run delete $pc.attempted_bondage.interrupt>>
+        <<set _doer to $pc.attempted_bondage.doer>>
+            <<highlight "button-sexact-continue new-size-button nokeys">>
+            <<button "Allow bondage" EncounterRework>>
+                <<set $pc.attempted_bondage.allowed to true>>
+                <<run $encounter.advance_round()>>
+            <</button>>
+        <</highlight>>
+        <<highlight "button-sexact-requestnew-size-button nokeys">>
+            <<button "Ask not to do bondage" EncounterRework>>
+                <<set $pc.attempted_bondage.requestingnot to true>>
+                <<run $encounter.advance_round()>>
+            <</button>>
+        <</highlight>>
+            <<highlight "button-sexact-resist new-size-button nokeys">>
+            <<button "Resist bondage" EncounterRework>>
+                <<run $encounter.times_resisted++>>
+                <<set $pc.attempted_bondage.resisting to true>>
+                <<run $encounter.advance_round()>>
+            <</button>>
+        <</highlight>>
+    <<elseif $encounter.midevent and $encounter.fire_midevent()>>
+        <<run setup.Events.register_event($encounter.midevent)>>
+        <<include $encounter.midevent>>
+        <<run delete $encounter.midevent>>
+    <</if>>
+</div>
+<</widget>>
+</e>

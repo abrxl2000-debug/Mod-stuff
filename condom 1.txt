@@ -1,0 +1,715 @@
+ &lt;&lt;if $pc.attempted_penetration and !$pc.attempted_penetration.seen and $pc.has_part(&quot;penis&quot;)&gt;&gt;
+        /* reaction to penis-haver PC penetrating vagina */
+        &lt;&lt;set _partner to $encounter.pobj($pc.attempted_penetration.target)&gt;&gt;
+        You&#39;re poised to enter &lt;&lt;anonorfirstname _partner&gt;&gt;.
+        &lt;br&gt;&lt;br&gt;
+        &lt;&lt;if $pc.attempted_penetration.claim_bc&gt;&gt;
+            &lt;&lt;if $pc.attempted_penetration.believes_bc&gt;&gt;
+                &lt;&lt;highlight unbad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj believe&gt;&gt; you&#39;ve had a vasectomy.&lt;&lt;/highlight&gt;&gt;
+            &lt;&lt;else&gt;&gt;
+                &lt;&lt;highlight bad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; trust that you&#39;ve had a vasectomy.&lt;&lt;/highlight&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if $pc.attempted_penetration.reluctantly_not_use_condom&gt;&gt;
+            &lt;&lt;highlight unbad&gt;&gt;&lt;&lt;psc&gt;&gt; reluctantly &lt;&lt;conj agree&gt;&gt; to not use a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+            &lt;&lt;set _doact to true&gt;&gt;
+        &lt;&lt;elseif $pc.attempted_penetration.reluctantly_use_condom&gt;&gt;
+            &lt;&lt;highlight unbad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj agree&gt;&gt; to let you use a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+            &lt;&lt;set _doact to true&gt;&gt;
+        &lt;&lt;elseif $pc.attempted_penetration.insist_remove_condom&gt;&gt;
+            &lt;&lt;highlight bad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; want to continue with a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;&lt;set _doact to !$pc.condom&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+        &lt;&lt;elseif $pc.attempted_penetration.insist_condom&gt;&gt;
+            &lt;&lt;highlight bad&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; want to continue unless you use a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;&lt;set _doact to !!$pc.condom&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+        &lt;&lt;elseif $pc.attempted_penetration.request_condom and !$pc.condom&gt;&gt;
+            &lt;&lt;highlight ungood&gt;&gt;&lt;&lt;psc&gt;&gt; would like you to use a condom.&lt;&lt;/highlight&gt;&gt;
+            &lt;br&gt;&lt;br&gt;
+            &lt;&lt;if !$pc.condom&gt;&gt;
+                &lt;&lt;button &quot;Ask not to use condom&quot; EncounterRound&gt;&gt;
+                    &lt;&lt;if setup.Pregnancy.insists_on_condom(_partner)&gt;&gt;
+                        &lt;&lt;set $pc.attempted_penetration.insist_condom to true&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $pc.attempted_penetration.reluctantly_not_use_condom to true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;/button&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+~
+<e>
+    <<if $penetrate_fail>>
+        <<set _targetP to $partner1>>
+        <<set _interpart to Object.values($interBits)[0]>>
+        <<if Object.keys($interBits) == 1>>
+            Your cock slip out of <<if _interpart == "vagina">><<pp _targetP>> <<dpussy _targetP>><<else>><<pp _targetP>> anus<</if>>
+        <<elseif Object.keys($interBits) == 2>>
+            <<ppc _targetP>> cock slip out of <<if _interpart == "vagina">>your <<dpussy $pc>><<else>>your anus<</if>>
+        <</if>>
+        <<unset $penetrate_fail>>
+        <<unset $interBits>>
+    <</if>>
+    <<if $pc.attempted_penetration and !$pc.attempted_penetration.seen and $pc.has_part("penis")>>
+        /* reaction to penis-haver PC penetrating vagina */
+        <<set _partner to $encounter.pobj($pc.attempted_penetration.target)>>
+        <<if _partner.fleeting_stats.lubricatedV < 300 && _partner.has_part("hymen")>>
+            As you probe your cock between <<po>> lips, touching that thin wall who protect <<po>> virginity, <<ps>> slighty move away.
+            <br>
+            <<highlight sexy>>W-wait! You know it's my first time.<</highlight>> <<psc>> say. <<highlight sexy>>Just... let me get ready, ok? <</highlight>>
+            <br><br>
+            <<button "Ignore" EncounterRound>>
+                <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                <<unset $pc.attempted_penetration>>
+            <</button>>
+        <<elseif _partner.fleeting_stats.lubricatedV < 300 && !_partner.has_part("hymen")>>
+            As you probe your cock between <<po>> lips, parting them away, <<ps>> slighty move away.
+            <br>
+            <<highlight sexy>>W-wait. I&#39;m not ready yet.<</highlight>> <<psc>> say. <<highlight sexy>>Just... let me get ready, ok?<</highlight>>
+            <br><br>
+             <<button "Ignore" EncounterRound>>
+        <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+        <<unset $pc.attempted_penetration>>
+    <</button>>
+        <<elseif _partner.fleeting_stats.lubricatedV >= 300>>
+            You're poised to enter <<anonorfirstname _partner>>.
+            <br><br>
+            <<if $pc.attempted_penetration.claim_bc>>
+                <<if $pc.attempted_penetration.believes_bc>>
+                    <<highlight unbad>><<psc>> <<conj believe>> you've had a vasectomy.<</highlight>>
+                <<else>>
+                    <<highlight bad>><<psc>> <<conj "don't">> trust that you've had a vasectomy.<</highlight>>
+                <</if>>
+            <</if>>
+            <<if $pc.attempted_penetration.reluctantly_not_use_condom>>
+                <<highlight unbad>><<psc>> reluctantly <<conj agree>> to not use a condom.<</highlight>>
+                <br><br>
+                <<set _doact to true>>
+            <<elseif $pc.attempted_penetration.reluctantly_use_condom>>
+                <<highlight unbad>><<psc>> <<conj agree>> to let you use a condom.<</highlight>>
+                <br><br>
+                <<set _doact to true>>
+            <<elseif $pc.attempted_penetration.insist_remove_condom>>
+                <<highlight bad>><<psc>> <<conj "don't">> want to continue with a condom.<</highlight>>
+                <<set _doact to !$pc.condom>>
+                <br><br>
+            <<elseif $pc.attempted_penetration.insist_condom>>
+                <<highlight bad>><<psc>> <<conj "don't">> want to continue unless you use a condom.<</highlight>>
+                <<set _doact to !!$pc.condom>>
+                <br><br>
+            <<elseif $pc.attempted_penetration.request_condom and !$pc.condom>>
+                <<highlight ungood>><<psc>> would like you to use a condom.<</highlight>>
+                <br><br>
+                <<if !$pc.condom>>
+                    <<if $pc.skillleveled("Dominance", 3)>>
+                        <<button "Don't listen" EncounterRound>>
+                            <<set $pc.attempted_penetration.reluctantly_not_use_condom to true>>
+                            <<run $pc.add_act($pc.attempted_penetration.sexact, _partner)>>
+                            <<unset $pc.attempted_penetration>>
+                        <</button>>
+                    <</if>>
+                    <<button "Ask not to use condom" EncounterRound>>
+                        <<if setup.Pregnancy.insists_on_condom(_partner)>>
+                            <<set $pc.attempted_penetration.insist_condom to true>>
+                        <<else>>
+                        <<set $pc.attempted_penetration.reluctantly_not_use_condom to true>>
+                        <</if>>
+                    <</button>>
+                <</if>>
+            <</if>>
+</e>
+~~
+            &lt;&lt;if !_partner.is_pc&gt;&gt;
+                &lt;&lt;if _partner.attempted_clothing_act&gt;&gt;
+                    &lt;&lt;set _attempt to _partner.attempted_clothing_act&gt;&gt;
+                    &lt;&lt;if !_attempt.seen&gt;&gt;
+                        &lt;&lt;highlight &quot;narrate-sexact-clothes-initiate&quot;&gt;&gt;&lt;&lt;cap _pn&gt;&gt; takes hold of your &lt;&lt;= _attempt.clothing&gt;&gt;.&lt;&lt;/highlight&gt;&gt;
+                    &lt;&lt;elseif _attempt.denied&gt;&gt;
+                        &lt;&lt;if _attempt.cancelled&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;unbad&quot;&gt;&lt;&lt;conjname _partner seem&gt;&gt; to listen&lt;/span&gt; to your request.
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;bad&quot;&gt;&lt;&lt;conjname _partner &#39;don\&#39;t&#39;&gt;&gt; seem to care&lt;/span&gt; what you want to happen.
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;set _partner.attempted_clothing_act to null&gt;&gt;
+                    &lt;&lt;elseif _attempt.resisted&gt;&gt;
+                        &lt;&lt;if _attempt.fight&gt;&gt;
+                            &lt;&lt;if _attempt.cancelled&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;unbad&quot;&gt;&lt;&lt;conjname _partner give&gt;&gt; in after a struggle&lt;/span&gt;, but the fight is wearing you out.
+                            &lt;&lt;else&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner growl&gt;&gt;, overcoming your struggles and &lt;span class=&quot;bad&quot;&gt;forcing you&lt;/span&gt;.
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner offer&gt;&gt; no resistance to your struggling, &lt;span class=&quot;unbad&quot;&gt;immediately relenting&lt;/span&gt;.
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;set _partner.attempted_clothing_act to null&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set _partner.attempted_clothing_act to null&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;set _attempt.seen to true&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+                &lt;&lt;if _partner.attempted_penetration&gt;&gt;
+                    &lt;&lt;set _attempt to _partner.attempted_penetration&gt;&gt;
+                    &lt;&lt;set _act to setup.sexacts[_attempt.sexact]&gt;&gt;
+                    &lt;&lt;if !_attempt.seen&gt;&gt;
+                        &lt;&lt;if _act[&quot;subject parts&quot;][0] is &quot;penis&quot;&gt;&gt;
+                            &lt;&lt;if _act[&quot;object parts&quot;][0] is &quot;mouth&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner push&gt;&gt; the tip of &lt;&lt;pp _partner&gt;&gt; cock against your lips, wanting to &lt;span class=&quot;sexy bold&quot;&gt;take your mouth&lt;/span&gt;.
+                            &lt;&lt;elseif _act[&quot;object parts&quot;][0] is &quot;vagina&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner nudge&gt;&gt; the tip of &lt;&lt;pp _partner&gt;&gt; cock against your &lt;&lt;pussy $pc&gt;&gt;, nestling it at your opening.
+                                &lt;&lt;if !V.kinkcontent.includes(&quot;breeding&quot;)&gt;&gt;
+                                    &lt;span class=&quot;sexy bold&quot;&gt;&lt;&lt;psc&gt;&gt;&#39;ll be inside you in another moment.&lt;/span&gt;
+                                &lt;&lt;elseif setup.Pregnancy.wants_condom(_partner) &amp;&amp; !_partner.condom&gt;&gt;
+                                    &lt;&lt;if _partner.has_condom()&gt;&gt;
+                                        &lt;&lt;set _condom to _partner.condom_types()[0]&gt;&gt;
+                                        &lt;&lt;highlight sexy&gt;&gt;&lt;&lt;psc _partner&gt;&gt; &lt;&lt;conj pause&gt;&gt; long enough to put on &lt;&lt;aoran _condom&gt;&gt; _condom.&lt;&lt;/highlight&gt;&gt;
+                                        &lt;&lt;run _partner.wear_condom(_condom)&gt;&gt;
+                                        &lt;&lt;run _partner.remove_condom(_condom)&gt;&gt;
+                                        &lt;span class=&quot;sexy bold&quot;&gt;&lt;&lt;psc&gt;&gt;&#39;ll be inside you in another moment.&lt;/span&gt;
+                                    &lt;&lt;else&gt;&gt;
+                                        &lt;&lt;highlight bad&gt;&gt;&lt;&lt;psc _partner&gt;&gt; &lt;&lt;conj &quot;want&quot;&gt;&gt; to use a condom, but &lt;&lt;ps&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; have one.&lt;&lt;/highlight&gt;&gt;
+                                        &lt;&lt;set _attempt.suspended to true&gt;&gt;
+                                    &lt;&lt;/if&gt;&gt;
+                                &lt;&lt;elseif !setup.Pregnancy.wants_condom(_partner)&gt;&gt;
+                                    &lt;&lt;highlight ungood&gt;&gt;&lt;&lt;psc _partner&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; care to use a condom.&lt;&lt;/highlight&gt;&gt;
+                                    &lt;span class=&quot;sexy bold&quot;&gt;&lt;&lt;psc&gt;&gt;&#39;ll be inside you in another moment.&lt;/span&gt;
+                                &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;elseif _act[&quot;object parts&quot;][0] is &quot;anus&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner push&gt;&gt; the tip of &lt;&lt;pp _partner&gt;&gt; cock against your &lt;&lt;anus $pc&gt;&gt;, &lt;span class=&quot;sexy bold&quot;&gt;wanting to penetrate&lt;/span&gt;.
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;elseif _act[&quot;object parts&quot;][0] is &quot;penis&quot;&gt;&gt;
+                            &lt;&lt;if _act[&quot;subject parts&quot;][0] is &quot;mouth&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner kiss&gt;&gt; the tip of your cock, &lt;span class=&quot;sexy bold&quot;&gt;about to take it into &lt;&lt;pp _partner&gt;&gt; mouth&lt;/span&gt;.
+                            &lt;&lt;elseif _act[&quot;subject parts&quot;][0] is &quot;vagina&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner guide&gt;&gt; your cock to &lt;&lt;pp _partner&gt;&gt; &lt;&lt;pussy _partner&gt;&gt;, &lt;span class=&quot;sexy bold&quot;&gt;about to push you in&lt;/span&gt;.
+                                &lt;&lt;if V.kinkcontent.includes(&quot;breeding&quot;)&gt;&gt;
+                                    &lt;&lt;if setup.Pregnancy.wants_condom(_partner)&gt;&gt;
+                                        &lt;&lt;if !$pc.condom&gt;&gt;
+                                            &lt;&lt;psc&gt;&gt; &lt;&lt;conj pause&gt;&gt; then. &lt;&lt;highlight ungood&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj want&gt;&gt; you to use a condom.&lt;&lt;/highlight&gt;&gt;
+                                            &lt;&lt;set _attempt.request_condom to true&gt;&gt;
+                                            &lt;&lt;set _attempt.suspended to true&gt;&gt;
+                                        &lt;&lt;else&gt;&gt;
+                                            &lt;&lt;psc&gt;&gt; &lt;&lt;conj seem&gt;&gt; to approve of you using a condom.
+                                            &lt;&lt;set _attempt.request_condom to true&gt;&gt;
+                                            &lt;&lt;set _attempt.suspended to false&gt;&gt;
+                                        &lt;&lt;/if&gt;&gt;
+                                    &lt;&lt;else&gt;&gt;
+                                        &lt;&lt;highlight ungood&gt;&gt;&lt;&lt;psc&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; seem interested in you using a condom.&lt;&lt;/highlight&gt;&gt;
+                                        &lt;&lt;set _attempt.wants_condom to false&gt;&gt;
+                                        &lt;&lt;if setup.Pregnancy.can_get_pregnant(_partner) and (setup.Pregnancy.on_birth_control(_partner) or setup.Pregnancy.has_iud(_partner))&gt;&gt;
+                                            &lt;&lt;psc&gt;&gt; &lt;&lt;conj say&gt;&gt; &lt;&lt;pss&gt;&gt; on birth control.
+                                        &lt;&lt;elseif !setup.Pregnancy.can_get_pregnant(_partner) and setup.Pregnancy.has_vasectomy(_partner)&gt;&gt;
+                                            &lt;&lt;psc&gt;&gt; &lt;&lt;conj say&gt;&gt; &lt;&lt;pshas&gt;&gt; had a vasectomy.
+                                        &lt;&lt;/if&gt;&gt;
+                                        &lt;&lt;if $pc.condom&gt;&gt;
+                                            &lt;&lt;set _attempt.suspended to true&gt;&gt;
+                                        &lt;&lt;/if&gt;&gt;
+                                    &lt;&lt;/if&gt;&gt;
+                                &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;elseif _act[&quot;subject parts&quot;][0] is &quot;anus&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner guide&gt;&gt; your cock to &lt;&lt;pp _partner&gt;&gt; &lt;&lt;anus _partner&gt;&gt;, &lt;span class=&quot;sexy bold&quot;&gt;about to shove you in&lt;/span&gt;.
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;elseif _act[&quot;toys&quot;]&gt;&gt;
+                            &lt;&lt;if _act[&quot;object parts&quot;][0] is &quot;mouth&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner push&gt;&gt; the tip of &lt;&lt;pp _partner&gt;&gt; toy against your lips, wanting to &lt;span class=&quot;sexy bold&quot;&gt;take your mouth&lt;/span&gt;.
+                            &lt;&lt;elseif _act[&quot;object parts&quot;][0] is &quot;vagina&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner nudge&gt;&gt; the tip of &lt;&lt;pp _partner&gt;&gt; toy against your &lt;&lt;pussy $pc&gt;&gt;, nestling it at your opening. &lt;span class=&quot;sexy bold&quot;&gt;&lt;&lt;psc&gt;&gt;&#39;ll be inside you in another moment.&lt;/span&gt;
+                            &lt;&lt;elseif _act[&quot;object parts&quot;][0] is &quot;anus&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner push&gt;&gt; the tip of &lt;&lt;pp _partner&gt;&gt; toy against your &lt;&lt;anus $pc&gt;&gt;, &lt;span class=&quot;sexy bold&quot;&gt;wanting to penetrate&lt;/span&gt;.
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;elseif _act[&quot;target toys&quot;]&gt;&gt;
+                            &lt;&lt;if _act[&quot;subject parts&quot;][0] is &quot;mouth&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner kiss&gt;&gt; the tip of your toy, &lt;span class=&quot;sexy bold&quot;&gt;about to take it into &lt;&lt;pp _partner&gt;&gt; mouth&lt;/span&gt;.
+                            &lt;&lt;elseif _act[&quot;subject parts&quot;][0] is &quot;vagina&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner guide&gt;&gt; your toy to &lt;&lt;pp _partner&gt;&gt; &lt;&lt;pussy _partner&gt;&gt;, &lt;span class=&quot;sexy bold&quot;&gt;about to push it in&lt;/span&gt;.
+                            &lt;&lt;elseif _act[&quot;subject parts&quot;][0] is &quot;anus&quot;&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner guide&gt;&gt; your toy to &lt;&lt;pp _partner&gt;&gt; &lt;&lt;anus _partner&gt;&gt;, &lt;span class=&quot;sexy bold&quot;&gt;about to push it in&lt;/span&gt;.
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;set _attempt.seen to true&gt;&gt;
+                    &lt;&lt;elseif _attempt.denied&gt;&gt;
+                        &lt;&lt;if _attempt.cancelled&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;unbad&quot;&gt;&lt;&lt;conjname _partner seem&gt;&gt; to listen&lt;/span&gt; to your request.
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;bad&quot;&gt;&lt;&lt;conjname _partner &#39;don\&#39;t&#39;&gt;&gt; seem to care&lt;/span&gt; what you want to happen.
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;set _partner.attempted_penetration to null&gt;&gt;
+                    &lt;&lt;elseif _attempt.resisted&gt;&gt;
+                        &lt;&lt;if _attempt.fight&gt;&gt;
+                            &lt;&lt;if _attempt.cancelled&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;unbad&quot;&gt;&lt;&lt;conjname _partner give&gt;&gt; in after a struggle&lt;/span&gt;, but the fight is wearing you out.
+                            &lt;&lt;else&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner growl&gt;&gt;, overcoming your struggles and &lt;span class=&quot;bad&quot;&gt;forcing you&lt;/span&gt;.
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner offer&gt;&gt; no resistance to your struggling, &lt;span class=&quot;unbad&quot;&gt;immediately relenting&lt;/span&gt;.
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;set _partner.attempted_penetration to null&gt;&gt;
+                    &lt;&lt;elseif def _attempt.wants_condom and !_attempt.done&gt;&gt;
+                        /* PC response to NPC-initiated penetration */
+                        &lt;&lt;unset _condom&gt;&gt;
+                        &lt;&lt;if _attempt.wants_condom&gt;&gt;
+                            &lt;&lt;if setup.Pregnancy.wants_condom(_partner)&gt;&gt;
+                                &lt;&lt;if !_partner.has_condom() &amp;&amp; !_attempt.pick_condom&gt;&gt;
+                                    &lt;&lt;highlight ungood&gt;&gt;&lt;&lt;psc _partner&gt;&gt; &lt;&lt;conj seem&gt;&gt; agreeable to using a condom, but... &lt;&lt;ps&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; have one.&lt;&lt;/highlight&gt;&gt;
+                                &lt;&lt;else&gt;&gt;
+                                    &lt;&lt;set _condom to _attempt.pick_condom || _partner.condom_types()[0]&gt;&gt;
+                                    &lt;&lt;set _attempt.suspended to false&gt;&gt;
+                                &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;elseif setup.Pregnancy.reluctantly_uses_condom(_partner)&gt;&gt;
+                                &lt;&lt;if !_partner.has_condom() &amp;&amp; !_attempt.pick_condom&gt;&gt;
+                                    &lt;&lt;highlight ungood&gt;&gt;&lt;&lt;psc _partner&gt;&gt; &lt;&lt;conj seem&gt;&gt; reluctantly agreeable to using a condom, but... &lt;&lt;ps&gt;&gt; &lt;&lt;conj &quot;don&#39;t&quot;&gt;&gt; have one.&lt;&lt;/highlight&gt;&gt;
+                                    &lt;&lt;set _attempt.suspended to true&gt;&gt;
+                                &lt;&lt;else&gt;&gt;
+                                    &lt;&lt;highlight unbad&gt;&gt;&lt;&lt;encounternamec _partner&gt;&gt; reluctantly &lt;&lt;conjname _partner agree&gt;&gt; to use a condom.&lt;&lt;/highlight&gt;&gt;
+                                    &lt;&lt;set _condom to _attempt.pick_condom || _partner.condom_types()[0]&gt;&gt;
+                                    &lt;&lt;set _attempt.suspended to false&gt;&gt;
+                                &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;else&gt;&gt;
+                                &lt;&lt;highlight bad&gt;&gt;&lt;&lt;encounternamec _partner&gt;&gt; really &lt;&lt;conjname _partner &quot;don&#39;t&quot;&gt;&gt; want to use a condom.&lt;&lt;/highlight&gt;&gt;
+                                &lt;&lt;set _attempt.suspended to true&gt;&gt;
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;if !setup.Pregnancy.wants_condom(_partner)&gt;&gt;
+                                &lt;&lt;set _removecondom to true&gt;&gt;
+                                &lt;&lt;set _attempt.suspended to false&gt;&gt;
+                            &lt;&lt;elseif !setup.Pregnancy.insists_on_condom(_partner)&gt;&gt;
+                                &lt;&lt;highlight unbad&gt;&gt;&lt;&lt;encounternamec _partner&gt;&gt; reluctantly &lt;&lt;conjname _partner agree&gt;&gt; not to use a condom.&lt;&lt;/highlight&gt;&gt;
+                                &lt;&lt;set _removecondom to true&gt;&gt;
+                                &lt;&lt;set _attempt.suspended to false&gt;&gt;
+                                &lt;&lt;set _attempt.request_condom to false&gt;&gt;
+                            &lt;&lt;else&gt;&gt;
+                                &lt;&lt;highlight bad&gt;&gt;&lt;&lt;encounternamec _partner&gt;&gt; really &lt;&lt;conjname _partner insist&gt;&gt; on using a condom.&lt;&lt;/highlight&gt;&gt;
+                                &lt;&lt;set _attempt.suspended to true&gt;&gt;
+                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;if _removecondom&gt;&gt;
+                                &lt;&lt;if $pc.condom&gt;&gt;
+                                    You remove your condom.
+                                    &lt;&lt;unset $pc.condom&gt;&gt;
+                                &lt;&lt;elseif _partner.condom&gt;&gt;
+                                    &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner remove&gt;&gt; &lt;&lt;pp _partner&gt;&gt; condom.
+                                    &lt;&lt;unset _partner.condom&gt;&gt;
+                                &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;if _condom&gt;&gt;
+                            &lt;&lt;if _attempt.pick_condom&gt;&gt;
+                                &lt;&lt;run $pc.remove_condom(_condom)&gt;&gt;
+                            &lt;&lt;else&gt;&gt;
+                                &lt;&lt;run _partner.remove_condom(_condom)&gt;&gt;
+                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;if $pc.has_part(&quot;penis&quot;)&gt;&gt;
+                                &lt;&lt;run $pc.wear_condom(_condom)&gt;&gt;
+                                You put on &lt;&lt;aoran _condom&gt;&gt; _condom.
+                            &lt;&lt;else&gt;&gt;
+                                &lt;&lt;run _partner.wear_condom(_condom)&gt;&gt;
+                                &lt;&lt;psc _partner&gt;&gt; &lt;&lt;conj put&gt;&gt; on &lt;&lt;aoran _condom&gt;&gt; _condom.
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;highlight sexy&gt;&gt;The two of you remain poised at the edge of penetration.&lt;&lt;/highlight&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set _partner.attempted_penetration to null&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+                &lt;&lt;if _partner.attempted_position&gt;&gt;
+                    &lt;&lt;set _attempt to _partner.attempted_position&gt;&gt;
+                    &lt;&lt;if !_attempt.seen&gt;&gt;
+                        &lt;&lt;set _posname to _attempt.button&gt;&gt;
+                        &lt;&lt;set _posname = _posname.replace(&quot; (top)&quot;, &quot;&quot;)&gt;&gt;&lt;&lt;set _posname = _posname.replace(&quot; (bottom)&quot;, &quot;&quot;)&gt;&gt;
+                        &lt;&lt;set _posname = _posname.replace(&quot; (receiving)&quot;, &quot;&quot;)&gt;&gt;&lt;&lt;set _posname = _posname.replace(&quot; (giving)&quot;, &quot;&quot;)&gt;&gt;
+                        &lt;&lt;set _posname = _posname.replace(&quot; (dom)&quot;, &quot;&quot;)&gt;&gt;&lt;&lt;set _posname = _posname.replace(&quot; (sub)&quot;, &quot;&quot;)&gt;&gt;
+                        &lt;&lt;highlight &quot;narrate-sexact-position-initiate&quot;&gt;&gt;&lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner seem&gt;&gt; to be attempting to move you into the &lt;&lt;= setup.sexpositions[_posname].label&gt;&gt; position.&lt;&lt;/highlight&gt;&gt;
+                        &lt;&lt;set _attempt.seen to true&gt;&gt;
+                    &lt;&lt;elseif _attempt.denied&gt;&gt;
+                        &lt;&lt;if _attempt.cancelled&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;unbad&quot;&gt;&lt;&lt;conjname _partner seem&gt;&gt; to listen&lt;/span&gt; to your request.
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;bad&quot;&gt;&lt;&lt;conjname _partner &#39;don\&#39;t&#39;&gt;&gt; seem to care&lt;/span&gt; what you want to happen.
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;set _partner.attempted_position to null&gt;&gt;
+                    &lt;&lt;elseif _attempt.resisted&gt;&gt;
+                        &lt;&lt;if _attempt.fight&gt;&gt;
+                            &lt;&lt;if _attempt.cancelled&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;span class=&quot;unbad&quot;&gt;&lt;&lt;conjname _partner give&gt;&gt; in after a struggle&lt;/span&gt;, but the fight is wearing you out.
+                            &lt;&lt;else&gt;&gt;
+                                &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner growl&gt;&gt;, overcoming your struggles and &lt;span class=&quot;bad&quot;&gt;forcing you&lt;/span&gt;.
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;encounternamec _partner&gt;&gt; &lt;&lt;conjname _partner offer&gt;&gt; no resistance to your struggling, &lt;span class=&quot;unbad&quot;&gt;immediately relenting&lt;/span&gt;.
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;set _partner.attempted_position to null&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set _partner.attempted_position to null&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+                &lt;&lt;if _partner.is_pee_willing == false&gt;&gt; /* explicit check so this doesn&#39;t pass if it&#39;s null */
+                    /* stuff here */
+                &lt;&lt;/if&gt;&gt;
+                &lt;&lt;if _partner.equals($partner1) and $encounter.comment_on_roughness&gt;&gt;
+                    &lt;&lt;set $encounter.comment_on_roughness to false&gt;&gt;
+                    You ask &lt;&lt;po _partner&gt;&gt; to be more
+                    &lt;&lt;if $encounter.roughness_level_requested == -1&gt;&gt;
+                        gentle.
+                    &lt;&lt;else&gt;&gt;
+                        rough.
+                    &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;if $encounter.roughness_request_denied&gt;&gt;
+                        &lt;&lt;if $partner1.is_dominant()&gt;&gt;
+                            &lt;&lt;psc _partner&gt;&gt; says, &quot;Sorry, that&#39;s one thing I can&#39;t do.&quot;
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;psc _partner&gt;&gt; says, &quot;Sorry... I don&#39;t think I can do that.&quot;
+                        &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;elseif $encounter.roughness_level_requested == -1&gt;&gt;
+                        &lt;&lt;psc _partner&gt;&gt; says, &quot;Of course.&quot;
+                    &lt;&lt;elseif _partner.is_dominant()&gt;&gt;
+                        &lt;&lt;psc _partner&gt;&gt; says, &quot;Absolutely.&quot;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;psc _partner&gt;&gt; says, &quot;I&#39;ll do my best.&quot;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+                &lt;&lt;unset _spokeidea&gt;&gt;
+                &lt;&lt;if _partner.equals($partner1) and $encounter.idea and !$encounter.pc_witnessing&gt;&gt;
+                    &lt;&lt;if $encounter.requested_idea&gt;&gt;
+                        &lt;&lt;= $encounter.requested_idea[1]&gt;&gt;
+                        &lt;&lt;run delete $encounter.requested_idea&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;if $encounter.last_idea_switch is $encounter.rounds&gt;&gt;
+                        &lt;&lt;if !$encounter.pc_idea&gt;&gt;
+                            &lt;&lt;dirtytalkidea&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+                            &lt;&lt;dirtytalkmyidea&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;set _spokeidea to true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+                &lt;&lt;if $pc.attempted_pullaway and _partner.equals($pc.attempted_pullaway.target) and $pc.attempted_pullaway.resisted and !$pc.attempted_pullaway.narrated&gt;&gt;
+                    &lt;&lt;if $pc.attempted_pullaway.prevented&gt;&gt;
+                        &lt;&lt;encounternamec _partner&gt;&gt; resists as you try to pull away, &lt;&lt;highlight bad&gt;&gt;keeping you in place&lt;&lt;/highlight&gt;&gt;.
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;encounternamec _partner&gt;&gt; resists as you try to pull away, &lt;&lt;highlight unbad&gt;&gt;but gives in after a struggle&lt;&lt;/highlight&gt;&gt;.
+                    &lt;&lt;/if&gt;&gt;
+                    The fight is wearing you out.
+                    &lt;&lt;set $pc.attempted_pullaway.narrated to true&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+                &lt;&lt;if !_partner.is_pc and !_partner.orgasms and _partner.arousal() gte (_partner.max_arousal() - 180) and !_partner.announced_orgasm&gt;&gt;
+                    &lt;&lt;dirtytalkgonnacum _partner&gt;&gt;
+                    &lt;&lt;set _partner.announced_orgasm to true&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+            &lt;&lt;if !$pc.equals(_partner) and !_spokeidea and !_partner.announced_orgasm&gt;&gt;
+                &lt;&lt;dirtytalk _partner&gt;&gt;
+                &lt;&lt;dirtytalkplayerskillreaction _partner&gt;&gt;
+            &lt;&lt;elseif $pc.equals(_partner) and $pc.dirtytalkqueued&gt;&gt;
+                &lt;&lt;dirtytalkpc $pc&gt;&gt;
+                &lt;&lt;unset $pc.dirtytalkqueued&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+            &lt;&lt;if !$pc.equals(_partner) and !$encounter.anonymous &amp;&amp; !setup.people.gender_known(_partner) and !$encounter.pc_witnessing&gt;&gt;
+                /* this is generally not where the player first learns this but it can slip through sometimes */
+                &lt;&lt;learngenderforsex _partner&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+~
+<e>
+            <<if !_partner.is_pc>>
+                <<if _partner.attempted_clothing_act>>
+                    <<set _attempt to _partner.attempted_clothing_act>>
+                    <<if !_attempt.seen>>
+                        <<highlight "narrate-sexact-clothes-initiate">><<cap _pn>> takes hold of your <<= _attempt.clothing>>.<</highlight>>
+                    <<elseif _attempt.denied>>
+                        <<if _attempt.cancelled>>
+                            <<encounternamec _partner>> <span class="unbad"><<conjname _partner seem>> to listen</span> to your request.
+                        <<else>>
+                            <<encounternamec _partner>> <span class="bad"><<conjname _partner 'don\'t'>> seem to care</span> what you want to happen.
+                        <</if>>
+                        <<set _partner.attempted_clothing_act to null>>
+                    <<elseif _attempt.resisted>>
+                        <<if _attempt.fight>>
+                            <<if _attempt.cancelled>>
+                                <<encounternamec _partner>> <span class="unbad"><<conjname _partner give>> in after a struggle</span>, but the fight is wearing you out.
+                            <<else>>
+                                <<encounternamec _partner>> <<conjname _partner growl>>, overcoming your struggles and <span class="bad">forcing you</span>.
+                            <</if>>
+                        <<else>>
+                            <<encounternamec _partner>> <<conjname _partner offer>> no resistance to your struggling, <span class="unbad">immediately relenting</span>.
+                        <</if>>
+                        <<set _partner.attempted_clothing_act to null>>
+                    <<else>>
+                        <<set _partner.attempted_clothing_act to null>>
+                    <</if>>
+                    <<set _attempt.seen to true>>
+                <</if>>
+                <<if _partner.attempted_penetration>>
+                    <<set _attempt to _partner.attempted_penetration>>
+                    <<set _act to setup.sexacts[_attempt.sexact]>>
+                    <<if !_attempt.seen>>
+                        <<if _act["subject parts"][0] is "penis">>
+                            <<if _act["object parts"][0] is "mouth">>
+                                <<encounternamec _partner>> <<conjname _partner push>> the tip of <<pp _partner>> cock against your lips, wanting to <span class="sexy bold">take your mouth</span>.
+                            <<elseif _act["object parts"][0] is "vagina">>
+                                <<encounternamec _partner>> <<conjname _partner nudge>> the tip of <<pp _partner>> cock against your <<pussy $pc>>, nestling it at your opening.
+                                <<if !V.kinkcontent.includes("breeding")>>
+                                    <span class="sexy bold"><<psc>>'ll be inside you in another moment.</span>
+                                <<elseif setup.Pregnancy.wants_condom(_partner) && !_partner.condom>>
+                                    <<if _partner.has_condom()>>
+                                        <<set _condom to _partner.condom_types()[0]>>
+                                        <<highlight sexy>><<psc _partner>> <<conj pause>> long enough to put on <<aoran _condom>> _condom.<</highlight>>
+                                        <<run _partner.wear_condom(_condom)>>
+                                        <<run _partner.remove_condom(_condom)>>
+                                        <span class="sexy bold"><<psc>>'ll be inside you in another moment.</span>
+                                    <<else>>
+                                        <<highlight bad>><<psc _partner>> <<conj "want">> to use a condom, but <<ps>> <<conj "don't">> have one.<</highlight>>
+                                        <<set _attempt.suspended to true>>
+                                    <</if>>
+                                <<elseif !setup.Pregnancy.wants_condom(_partner)>>
+                                    <<highlight ungood>><<psc _partner>> <<conj "don't">> care to use a condom.<</highlight>>
+                                    <span class="sexy bold"><<psc>>'ll be inside you in another moment.</span>
+                                <</if>>
+                            <<elseif _act["object parts"][0] is "anus">>
+                                <<encounternamec _partner>> <<conjname _partner push>> the tip of <<pp _partner>> cock against your <<anus $pc>>, <span class="sexy bold">wanting to penetrate</span>.
+                            <</if>>
+                        <<elseif _act["object parts"][0] is "penis">>
+                            <<if _act["subject parts"][0] is "mouth">>
+                                <<encounternamec _partner>> <<conjname _partner kiss>> the tip of your cock, <span class="sexy bold">about to take it into <<pp _partner>> mouth</span>.
+                            <<elseif _act["object parts"][0] is "vagina">>
+                                <<if $pc.has_part("hymen")>>
+                                    <<set _hashymen to 1>>
+                                <</if>>
+                                <<if setup.Needs.get_need("Lubricated") < 300>>
+                                    <<set _notready to 1>>
+                                <</if>>
+                                <<encounternamec _partner>> <<conjname _partner nudge>> the tip of <<pp _partner>> cock against your <<pussy $pc>>,<<if _hashymen is 1>> almost touching your hymen.<<else>> nestling it at your opening.<</if>>
+                                <<if !V.kinkcontent.includes("breeding")>>
+                                    <<if _notready is 1>>
+                                        <span class="bad bold"><<psc>>'ll be inside you in another moment, but you don't think you're wet enought.</span>
+                                    <<else>>
+                                        <span class="sexy bold"><<psc>>'ll be inside you in another moment.</span>
+                                    <</if>>
+                                <<elseif setup.Pregnancy.wants_condom(_partner) && !_partner.condom>>
+                                    <<if _partner.has_condom()>>
+                                        <<set _condom to _partner.condom_types()[0]>>
+                                        <<highlight sexy>><<psc _partner>> <<conj pause>> long enough to put on <<aoran _condom>> _condom.<</highlight>>
+                                        <<run _partner.wear_condom(_condom)>>
+                                        <<run _partner.remove_condom(_condom)>>
+                                        <<if _notready is 1>>
+                                            <span class="bad bold"><<psc>>'ll be inside you in another moment, but you don't think you're wet enought.</span>
+                                        <<else>>
+                                            <span class="sexy bold"><<psc>>'ll be inside you in another moment.</span>
+                                        <</if>>
+                                    <<else>>
+                                        <<highlight bad>><<psc _partner>> <<conj "want">> to use a condom, but <<ps>> <<conj "don't">> have one.<</highlight>>
+                                        <<set _attempt.suspended to true>>
+                                    <</if>>
+                                <<elseif !setup.Pregnancy.wants_condom(_partner)>>
+                                    <<highlight ungood>><<psc _partner>> <<conj "don't">> care to use a condom.<</highlight>>
+                                    <<if _notready is 1>>
+                                        <span class="bad bold"><<psc>>'ll be inside you in another moment, but you don't think you're wet enought.</span>
+                                    <<else>>
+                                        <span class="sexy bold"><<psc>>'ll be inside you in another moment.</span>
+                                    <</if>>
+                                <</if>>
+                            <<elseif _act["object parts"][0] is "anus">>
+                                <<encounternamec _partner>> <<conjname _partner push>> the tip of <<pp _partner>> cock against your <<anus $pc>>,
+                                <<if _notready is 1>>
+                                    <span class="bad bold">wanting to penetrate, but you don't think you're ready to take it</span>.
+                                <<else>>
+                                    <span class="sexy bold">wanting to penetrate</span>.
+                                <</if>>
+                            <</if>>
+                        <<elseif _act["toys"]>>
+                            <<if _act["object parts"][0] is "mouth">>
+                                <<encounternamec _partner>> <<conjname _partner push>> the tip of <<pp _partner>> toy against your lips, wanting to <span class="sexy bold">take your mouth</span>.
+                            <<elseif _act["object parts"][0] is "vagina">>
+                                <<encounternamec _partner>> <<conjname _partner nudge>> the tip of <<pp _partner>> toy against your <<pussy $pc>>, nestling it at your opening. <span class="sexy bold"><<psc>>'ll be inside you in another moment.</span>
+                            <<elseif _act["object parts"][0] is "anus">>
+                                <<encounternamec _partner>> <<conjname _partner push>> the tip of <<pp _partner>> toy against your <<anus $pc>>, <span class="sexy bold">wanting to penetrate</span>.
+                            <</if>>
+                        <<elseif _act["target toys"]>>
+                            <<if _act["subject parts"][0] is "mouth">>
+                                <<encounternamec _partner>> <<conjname _partner kiss>> the tip of your toy, <span class="sexy bold">about to take it into <<pp _partner>> mouth</span>.
+                            <<elseif _act["subject parts"][0] is "vagina">>
+                                <<encounternamec _partner>> <<conjname _partner guide>> your toy to <<pp _partner>> <<pussy _partner>>, <span class="sexy bold">about to push it in</span>.
+                            <<elseif _act["subject parts"][0] is "anus">>
+                                <<encounternamec _partner>> <<conjname _partner guide>> your toy to <<pp _partner>> <<anus _partner>>, <span class="sexy bold">about to push it in</span>.
+                            <</if>>
+                        <</if>>
+                        <<set _attempt.seen to true>>
+                    <<elseif _attempt.denied>>
+                        <<if _attempt.cancelled>>
+                            <<encounternamec _partner>> <span class="unbad"><<conjname _partner seem>> to listen</span> to your request.
+                        <<else>>
+                            <<encounternamec _partner>> <span class="bad"><<conjname _partner 'don\'t'>> seem to care</span> what you want to happen.
+                        <</if>>
+                        <<set _partner.attempted_penetration to null>>
+                    <<elseif _attempt.resisted>>
+                        <<if _attempt.fight>>
+                            <<if _attempt.cancelled>>
+                                <<encounternamec _partner>> <span class="unbad"><<conjname _partner give>> in after a struggle</span>, but the fight is wearing you out.
+                            <<else>>
+                                <<encounternamec _partner>> <<conjname _partner growl>>, overcoming your struggles and <span class="bad">forcing you</span>.
+                            <</if>>
+                        <<else>>
+                            <<encounternamec _partner>> <<conjname _partner offer>> no resistance to your struggling, <span class="unbad">immediately relenting</span>.
+                        <</if>>
+                        <<set _partner.attempted_penetration to null>>
+                    <<elseif def _attempt.wants_condom and !_attempt.done>>
+                        /* PC response to NPC-initiated penetration */
+                        <<unset _condom>>
+                        <<if _attempt.wants_condom>>
+                            <<if setup.Pregnancy.wants_condom(_partner)>>
+                                <<if !_partner.has_condom() && !_attempt.pick_condom>>
+                                    <<highlight ungood>><<psc _partner>> <<conj seem>> agreeable to using a condom, but... <<ps>> <<conj "don't">> have one.<</highlight>>
+                                <<else>>
+                                    <<set _condom to _attempt.pick_condom || _partner.condom_types()[0]>>
+                                    <<set _attempt.suspended to false>>
+                                <</if>>
+                            <<elseif setup.Pregnancy.reluctantly_uses_condom(_partner)>>
+                                <<if !_partner.has_condom() && !_attempt.pick_condom>>
+                                    <<highlight ungood>><<psc _partner>> <<conj seem>> reluctantly agreeable to using a condom, but... <<ps>> <<conj "don't">> have one.<</highlight>>
+                                    <<set _attempt.suspended to true>>
+                                <<else>>
+                                    <<highlight unbad>><<encounternamec _partner>> reluctantly <<conjname _partner agree>> to use a condom.<</highlight>>
+                                    <<set _condom to _attempt.pick_condom || _partner.condom_types()[0]>>
+                                    <<set _attempt.suspended to false>>
+                                <</if>>
+                            <<else>>
+                                <<highlight bad>><<encounternamec _partner>> really <<conjname _partner "don't">> want to use a condom.<</highlight>>
+                                <<set _attempt.suspended to true>>
+                            <</if>>
+                        <<else>>
+                            <<if !setup.Pregnancy.wants_condom(_partner)>>
+                                <<set _removecondom to true>>
+                                <<set _attempt.suspended to false>>
+                            <<elseif !setup.Pregnancy.insists_on_condom(_partner)>>
+                                <<highlight unbad>><<encounternamec _partner>> reluctantly <<conjname _partner agree>> not to use a condom.<</highlight>>
+                                <<set _removecondom to true>>
+                                <<set _attempt.suspended to false>>
+                                <<set _attempt.request_condom to false>>
+                            <<else>>
+                                <<highlight bad>><<encounternamec _partner>> really <<conjname _partner insist>> on using a condom.<</highlight>>
+                                <<set _attempt.suspended to true>>
+                            <</if>>
+                            <<if _removecondom>>
+                                <<if $pc.condom>>
+                                    You remove your condom.
+                                    <<unset $pc.condom>>
+                                <<elseif _partner.condom>>
+                                    <<encounternamec _partner>> <<conjname _partner remove>> <<pp _partner>> condom.
+                                    <<unset _partner.condom>>
+                                <</if>>
+                            <</if>>
+                        <</if>>
+                        <<if _condom>>
+                            <<if _attempt.pick_condom>>
+                                <<run $pc.remove_condom(_condom)>>
+                            <<else>>
+                                <<run _partner.remove_condom(_condom)>>
+                            <</if>>
+                            <<if $pc.has_part("penis")>>
+                                <<run $pc.wear_condom(_condom)>>
+                                You put on <<aoran _condom>> _condom.
+                            <<else>>
+                                <<run _partner.wear_condom(_condom)>>
+                                <<psc _partner>> <<conj put>> on <<aoran _condom>> _condom.
+                            <</if>>
+                        <</if>>
+                        <<highlight sexy>>The two of you remain poised at the edge of penetration.<</highlight>>
+                    <<else>>
+                        <<set _partner.attempted_penetration to null>>
+                    <</if>>
+                <</if>>
+                <<if _partner.attempted_position>>
+                    <<set _attempt to _partner.attempted_position>>
+                    <<if !_attempt.seen>>
+                        <<set _posname to _attempt.button>>
+                        <<set _posname = _posname.replace(" (top)", "")>><<set _posname = _posname.replace(" (bottom)", "")>>
+                        <<set _posname = _posname.replace(" (receiving)", "")>><<set _posname = _posname.replace(" (giving)", "")>>
+                        <<set _posname = _posname.replace(" (dom)", "")>><<set _posname = _posname.replace(" (sub)", "")>>
+                        <<highlight "narrate-sexact-position-initiate">><<encounternamec _partner>> <<conjname _partner seem>> to be attempting to move you into the <<= setup.sexpositions[_posname].label>> position.<</highlight>>
+                        <<set _attempt.seen to true>>
+                    <<elseif _attempt.denied>>
+                        <<if _attempt.cancelled>>
+                            <<encounternamec _partner>> <span class="unbad"><<conjname _partner seem>> to listen</span> to your request.
+                        <<else>>
+                            <<encounternamec _partner>> <span class="bad"><<conjname _partner 'don\'t'>> seem to care</span> what you want to happen.
+                        <</if>>
+                        <<set _partner.attempted_position to null>>
+                    <<elseif _attempt.resisted>>
+                        <<if _attempt.fight>>
+                            <<if _attempt.cancelled>>
+                                <<encounternamec _partner>> <span class="unbad"><<conjname _partner give>> in after a struggle</span>, but the fight is wearing you out.
+                            <<else>>
+                                <<encounternamec _partner>> <<conjname _partner growl>>, overcoming your struggles and <span class="bad">forcing you</span>.
+                            <</if>>
+                        <<else>>
+                            <<encounternamec _partner>> <<conjname _partner offer>> no resistance to your struggling, <span class="unbad">immediately relenting</span>.
+                        <</if>>
+                        <<set _partner.attempted_position to null>>
+                    <<else>>
+                        <<set _partner.attempted_position to null>>
+                    <</if>>
+                <</if>>
+                <<if _partner.is_pee_willing == false>> /* explicit check so this doesn't pass if it's null */
+                    /* stuff here */
+                <</if>>
+                <<if _partner.equals($partner1) and $encounter.comment_on_roughness>>
+                    <<set $encounter.comment_on_roughness to false>>
+                    You ask <<po _partner>> to be more
+                    <<if $encounter.roughness_level_requested == -1>>
+                        gentle.
+                    <<else>>
+                        rough.
+                    <</if>>
+                    <<if $encounter.roughness_request_denied>>
+                        <<if $partner1.is_dominant()>>
+                            <<psc _partner>> says, "Sorry, that's one thing I can't do."
+                        <<else>>
+                            <<psc _partner>> says, "Sorry... I don't think I can do that."
+                        <</if>>
+                    <<elseif $encounter.roughness_level_requested == -1>>
+                        <<psc _partner>> says, "Of course."
+                    <<elseif _partner.is_dominant()>>
+                        <<psc _partner>> says, "Absolutely."
+                    <<else>>
+                        <<psc _partner>> says, "I'll do my best."
+                    <</if>>
+                <</if>>
+                <<unset _spokeidea>>
+                <<if _partner.equals($partner1) and $encounter.idea and !$encounter.pc_witnessing>>
+                    <<if $encounter.requested_idea>>
+                        <<= $encounter.requested_idea[1]>>
+                        <<run delete $encounter.requested_idea>>
+                    <</if>>
+                    <<if $encounter.last_idea_switch is $encounter.rounds>>
+                        <<if !$encounter.pc_idea>>
+                            <<dirtytalkidea>>
+                        <<else>>
+                            <<dirtytalkmyidea>>
+                        <</if>>
+                        <<set _spokeidea to true>>
+                    <</if>>
+                <</if>>
+                <<if $pc.attempted_pullaway and _partner.equals($pc.attempted_pullaway.target) and $pc.attempted_pullaway.resisted and !$pc.attempted_pullaway.narrated>>
+                    <<if $pc.attempted_pullaway.prevented>>
+                        <<encounternamec _partner>> resists as you try to pull away, <<highlight bad>>keeping you in place<</highlight>>.
+                    <<else>>
+                        <<encounternamec _partner>> resists as you try to pull away, <<highlight unbad>>but gives in after a struggle<</highlight>>.
+                    <</if>>
+                    The fight is wearing you out.
+                    <<set $pc.attempted_pullaway.narrated to true>>
+                <</if>>
+                <<if !_partner.is_pc and !_partner.orgasms and _partner.arousal() gte (_partner.max_arousal() - 180) and !_partner.announced_orgasm>>
+                    <<dirtytalkgonnacum _partner>>
+                    <<set _partner.announced_orgasm to true>>
+                <</if>>
+            <</if>>
+            <<if !$pc.equals(_partner) and !_spokeidea and !_partner.announced_orgasm>>
+                <<dirtytalk _partner>>
+                <<dirtytalkplayerskillreaction _partner>>
+            <<elseif $pc.equals(_partner) and $pc.dirtytalkqueued>>
+                <<dirtytalkpc $pc>>
+                <<unset $pc.dirtytalkqueued>>
+            <</if>>
+            <<if !$pc.equals(_partner) and !$encounter.anonymous && !setup.people.gender_known(_partner) and !$encounter.pc_witnessing>>
+                /* this is generally not where the player first learns this but it can slip through sometimes */
+                <<learngenderforsex _partner>>
+            <</if>>
+</e>

@@ -1,0 +1,567 @@
+<h3>Do with <<print _pn>>...</h3>
+<div style="flex-direction: row; display: flex;">
+    <div style="flex-direction: column; display: flex;">
+        <div style="width: 244px; height: 800px; border-radius: 2%; border-inline: solid;">
+            <div style="border-radius: var(--rounded-border-radius); border: var(--rounded-border-style);">
+                <h4>Use your left hand...</h4>
+                <div style="display: flex; border-radius: 2%; border-bottom: solid; background: rgb(180 100 180 / 5%); flex-flow: row wrap; height: 194px; align-content:flex-start; overflow-y: scroll;">
+                    <<set _acts to $pc.available_acts(_args[0])>>
+                    <<for _act range setup.acts_triage(_acts, "left hand")>>
+                        <<set _actname to $pc.act_name_for(_act, _args[0])>>
+                        <<set _class to setup.encounter_button_class(_act)>>
+                        <<capture _act>><<highlight _class>><<button _actname "EncounterRework">><<run $pc.do_act(_act, _args[0])>><</button>><</highlight>><</capture>>
+                    <</for>>
+                </div>
+                <h4>Use your right hand...</h4>
+                <div style="display: flex; border-radius: 2%; border-bottom: solid; background: rgb(180 100 180 / 5%); flex-flow: row wrap; height: 194px; align-content:flex-start; overflow-y: scroll;">
+                    <<set _acts to $pc.available_acts(_args[0])>>
+                    <<for _act range setup.acts_triage(_acts, "right hand")>>
+                        <<set _actname to $pc.act_name_for(_act, _args[0])>>
+                        <<set _class to setup.encounter_button_class(_act)>>
+                        <<capture _act>><<highlight _class>><<button _actname "EncounterRework">><<run $pc.do_act(_act, _args[0])>><</button>><</highlight>><</capture>>
+                    <</for>>
+                </div>
+                <h4>Use other parts...</h4>
+                <div style="display: flex; background: rgb(180 100 180 / 5%); flex-flow: row wrap; height: 194px; align-content:flex-start; overflow-y: scroll;">
+                    <<set _acts to $pc.available_acts(_args[0])>>
+                    <<for _act range setup.acts_remove(_acts, "hand")>>
+                        <<set _actname to $pc.act_name_for(_act, _args[0])>>
+                        <<set _class to setup.encounter_button_class(_act)>>
+                        <<capture _act>><<highlight _class>><<button _actname "EncounterRework">><<run $pc.do_act(_act, _args[0])>><</button>><</highlight>><</capture>>
+                    <</for>>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 100%;">
+        <div style="width: 100%; height: 600px; overflow-y: scroll;">
+            <<if $encounter.time_to_end()>>
+                <<if $encounter.aborted>>
+                    <<set _nextpassage to $encounter.abortpassage || $encounter.endpassage>>
+                    <<for _partner range $encounter.partners()>>
+                        <<if _partner.orgasms gt 0>>
+                            <<set _nextpassage to $encounter.endpassage>>
+                            <<break>>
+                        <</if>>
+                    <</for>>
+                <<else>>
+                    <<set _nextpassage to $encounter.endpassage>>
+                    <<if $encounter.aftercare and $encounter.consensual and $encounter.partners().length is 1 and !$encounter.pc_witnessing>>
+                        <<initaftercare _nextpassage>>
+                        <<set _nextpassage to "Aftercare">>
+                        <<set $eventnpc to $partner1>>
+                        <<if $encounter.secondround>>
+                            <<set $aftercare.secondround to true>>
+                        <</if>>
+                        <<set $aftercare.position to $pc.position_with($partner1)>>
+                        <<set $aftercare.role to $pc.role_with($partner1)>>
+                        <<if $encounter.abortpassage>>
+                            <<set $aftercare.abortpassage to $encounter.abortpassage>>
+                        <</if>>
+                        <<set $aftercare.rating to $partner1.rate_encounter()>>
+                    <</if>>
+                    <<postencountereffects $encounter>>
+                <</if>>
+                <<if (!$aftercare or $encounter.aborted) and $partner1 and !$encounter.anonymous and !$encounter.pc_witnessing>>
+                    <<set _rating to $partner1.rate_encounter()>>
+                    <<set $lastnpcref to $partner1.name>>
+                    <<encounterrating _rating>>
+                    <br><br>
+                <<elseif $encounter.pc_witnessing>>
+                    You stop watching and move on.
+                    <br><br>
+                <</if>>
+                <br><br>
+                <<if !_nextpassage>><<set _nextpassage to $lastlocpassage>><</if>>
+                <<link "Next" _nextpassage>><<run setup.end_encounter()>><</link>>
+            <<elseif !$pc.swallowing_cum and !$pc.spitting_cum>>
+                <<include EncounterPositions>>
+                <br><br>
+                <<include EncounterActs>>
+            <<elseif $pc.swallowing_cum>>
+                You duck your head and gulp, feeling the warm thickness of the cum as it passes your throat and you swallow it down.<<run delete $pc.swallowing_cum>><br><br>
+            <<elseif $pc.spitting_cum>>
+                You lean your head to the side and open your mouth, thick ropes of cum dangling from your lips as you spit it out.<<run delete $pc.spitting_cum>><br><br>
+            <</if>>
+            <<set _candirtytalk to (!$encounter.wordless && $encounter.partners().length > 0)>>
+        </div>
+        <<reworkencounterreact _args[0]>>
+    </div>
+    <div style="flex-direction: column; display: flex;">
+        <div style="width: 244px; border-radius: 2%; border-inline: solid; height: 800px;">
+            <div style="border-radius: var(--rounded-border-radius); border: var(--rounded-border-style);">
+                <h4>Dirty talk and Clothes...</h4>
+                <<reworkencounteractmenu _args[0]>>
+                <span id="changeplacemenu"><<reworkencounterpositionpcmenu _args[0]>></span>
+            </div>
+        </div>
+    </div>
+</div>
+<<if _partners.length > 1 && !_args[0].is_pc>>
+    <h3>Ask to...</h3>
+    <div style="border-radius: var(--rounded-border-radius); border: var(--rounded-border-style); height: 250px; width: 100%;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0; height: 250px;">
+            <<if !_args[0].attempted_position or !$pc.equals(_args[0].attempted_position.target)>>
+                <<set _ideas to $pc.all_possible_ideas(_args[0])>>
+                <<if Object.keys(_ideas).length gt 0>>
+                    <<set _roles to ["equal", "giving", "receiving"]>>
+                    <<for _role range _roles>>
+                        <<if _ideas[_role]>>
+                            <<if _role isnot "equal">>
+                                <<if _role is "receiving">>
+                                    <div style="border-right: 2px solid white; border-bottom: 2px solid white; background: rgb(180 100 180 / 5%); display: flex; flex-flow: row wrap; align-content:flex-start; overflow-y: scroll;">
+                                        <<for _idea range _ideas[_role]>>
+                                            <<set _npcidea to $pc.find_inverted_idea(_idea)>>
+                                            <<if !_npcidea and setup.sexideas[_idea].positions.includes("Sixty-Nine")>><<set _npcidea to _idea>><</if>>
+                                            <<if _npcidea>>
+                                                <<capture _idea,_npcidea>>
+                                                    <<set _requesttext to setup.sexideas[_idea].requesttext || _idea>>
+                                                    <<set _btnlabel to _requesttext.toUpperFirst()>>
+                                                    <<set _ideadisinhibchance to _args[0].disinhibition_allowed_likelihood(_npcidea)>>
+                                                    <<if _ideadisinhibchance gte 100>>
+                                                        <<set _buttonclass to "button-idea-certain new-widesize-button nokeys">>
+                                                    <<elseif _ideadisinhibchance gte 80>>
+                                                        <<set _buttonclass to "button-idea-likely new-widesize-button nokeys">>
+                                                    <<elseif _ideadisinhibchance gt 50>>
+                                                        <<set _buttonclass to "button-idea-unlikely new-widesize-button nokeys">>
+                                                    <<elseif _ideadisinhibchance gt 0>>
+                                                        <<set _buttonclass to "button-idea-very-unlikely new-widesize-button nokeys">>
+                                                    <<else>>
+                                                        <<set _buttonclass to "button-idea-impossible new-widesize-button nokeys">>
+                                                    <</if>>
+                                                    <<highlight _buttonclass>><<button _btnlabel "EncounterRework">><<run $pc.request_idea(_npcidea, _args[0])>><</button>><</highlight>>
+                                                <</capture>>
+                                            <</if>>
+                                        <</for>>
+                                    </div>
+                                <</if>>
+                            <</if>>
+                        <</if>>
+                    <</for>>
+                    <<for _role range _roles>>
+                        <<if _ideas[_role]>>
+                            <<if _role isnot "equal">>
+                                <<if _role is "giving">>
+                                    <div style="border-left: 2px solid white; border-bottom: 2px solid white; background: rgb(180 100 180 / 5%); display: flex; flex-flow: row wrap; align-content:flex-start; overflow-y: scroll;">
+                                        <<for _idea range _ideas[_role]>>
+                                            <<set _npcidea to $pc.find_inverted_idea(_idea)>>
+                                            <<if !_npcidea and setup.sexideas[_idea].positions.includes("Sixty-Nine")>><<set _npcidea to _idea>><</if>>
+                                            <<if _npcidea>>
+                                                <span class="new-widesize-button nokeys">
+                                                <<capture _idea,_npcidea>>
+                                                    <<set _requesttext to setup.sexideas[_idea].requesttext || _idea>>
+                                                    <<set _btnlabel to _requesttext.toUpperFirst()>>
+                                                    <<set _ideadisinhibchance to _args[0].disinhibition_allowed_likelihood(_npcidea)>>
+                                                    <<if _ideadisinhibchance gte 100>>
+                                                        <<set _buttonclass to "button-idea-certain">>
+                                                    <<elseif _ideadisinhibchance gte 80>>
+                                                        <<set _buttonclass to "button-idea-likely">>
+                                                    <<elseif _ideadisinhibchance gt 50>>
+                                                        <<set _buttonclass to "button-idea-unlikely">>
+                                                    <<elseif _ideadisinhibchance gt 0>>
+                                                        <<set _buttonclass to "button-idea-very-unlikely">>
+                                                    <<else>>
+                                                        <<set _buttonclass to "button-idea-impossible">>
+                                                    <</if>>
+                                                    <<highlight _buttonclass>><<button _btnlabel "EncounterRework">><<run $pc.request_idea(_npcidea, _args[0])>><</button>><</highlight>>
+                                                <</capture>>
+                                                </span>
+                                            <</if>>
+                                        <</for>>
+                                    </div>
+                                <</if>>
+                            <</if>>
+                        <</if>>
+                    <</for>>
+                    <div style="border-right: 2px solid white; border-top: 2px solid white;">
+                        <<set _ideas to $pc.all_possible_group_ideas(_args[0])>>
+                        <<if _ideas.length gt 0>>
+                            <<for _idea range _ideas>>
+                                <<capture _idea>>
+                                    <<set _requesttext to setup.groupsexideas[_idea].requesttext || _idea>>
+                                    <<set _btnlabel to _requesttext.toUpperFirst()>>
+                                    <<button _btnlabel "EncounterRework">><<run $pc.request_idea(_idea, _args[0])>><</button>>
+                                <</capture>>
+                            <</for>>
+                        <</if>>
+                    </div>
+                    <div style="border-left: 2px solid white; border-top: 2px solid white;">
+                        <<if $encounter.roughness_level == 0 && $encounter.consensual and !$encounter.roughness_request_denied>>
+                            <<set _buttonclass to "new-size-button nokeys">>
+                            <<highlight _buttonclass>><<button "Be more rough" "EncounterRework">><<run $pc.request_roughness(1, _args[0])>><</button>><</highlight>>
+                            <<highlight _buttonclass>><<button "Be more gentle" "EncounterRework">><<run $pc.request_roughness(-1, _args[0])>><</button>><</highlight>>
+                        <</if>>
+                    </div>
+                <</if>>
+            <</if>>
+        </div>
+    </div>
+    <span id="changepositionmenu"><<encounterchangepositionmenu _args[0]>></span>
+<</if>>
+<</widget>>
+<<widget "reworkencounterpositionpcmenu">>
+    <<set _partner to $encounter.pobj(_args[0] || _partner)>>
+    <<set _poscats to $pc.available_passive_positions()>>
+    <<if ndef _selectedfurniture>><<set _selectedfurniture to "">><</if>>
+    <h4>Position (Not used)...</h4>
+    <div style="display: flex; border-radius: 2%; border-bottom: solid; background: rgb(180 100 180 / 5%); flex-flow: row wrap; height: 194px; align-content:flex-start; overflow-y: scroll;">
+        <<for _cat range Object.keys(_poscats)>>
+            <<if Object.keys(_poscats[_cat]).length gt 0>>
+                <<for _pos range _poscats[_cat]["alone"]>>
+                    <<set _furniture to _cat == "none" ? null : _cat>>
+                    <<if _cat is "none" or _cat is _selectedfurniture>>
+                        <<set _label to setup.passivespositions[_pos.position].label>>
+                        <span class="button-sexact-position new-size-button nokeys">
+                            <<capture _pos,_furniture>><<button _label "EncounterRework">><<run $pc.do_passive(_pos, _furniture)>><</button>><</capture>>
+                        </span>
+                    <</if>>
+                <</for>>
+            <</if>>
+        <</for>>
+    </div>
+    <h4>Place (Not used)...</h4>
+    <div style="display: flex; background: rgb(180 100 180 / 5%); flex-flow: row wrap; height: 194px; align-content:flex-start; overflow-y: scroll;">
+        <<for _cat range Object.keys(_poscats)>>
+            <<if Object.keys(_poscats[_cat]).length gt 0>>
+                <<if _cat is "none" or _cat is _selectedfurniture>>
+
+                <<else>>
+                    <<capture _cat>>
+                        <span class="button-sexact-position new-size-button nokeys">
+                            <<set _btnlabel to "Move " + $pc.furniture_label(_cat)>>
+                            <<button _btnlabel>>
+                                <<set _selectedfurniture to _cat>>
+                                <<replace "#changeplacemenu">><<reworkencounterpositionpcmenu>><</replace>>
+                            <</button>>
+                        </span>
+                    <</capture>>
+                <</if>>
+            <</if>>
+        <</for>>
+    </div>
+<</widget>>
+<<widget "reworkencounterdirtytalkmenu">>
+    <<if !$encounter.pc_witnessing or $encounter.pc_masturbating>>
+    <<if !_args[0].is_pc>>
+        <<if _candirtytalk>>
+            <<set _talkpartner to _args[0] || _partner>>
+            <<set _dirtytalkid to "dirtytalk" + _talkpartner.name.replace(/[^a-zA-Z0-9_-]/g, "_")>>
+            <span @id="_dirtytalkid" style="display: flex; flex-flow: row wrap;">
+                <<set _anytalk to setup.Dialogue.encounter_lines($pc).length > 0>>
+                <<if setup.Dialogue.can_talk_submissively()>>
+                    <<set $pc.encounter_dialogue_tags to ["pc", "be submissive"]>>
+                    <<set _subtalk to setup.Dialogue.encounter_lines($pc).length > 0>>
+                <<else>>
+                    <<set _subtalk to false>>
+                <</if>>
+                <<if setup.Dialogue.can_talk_dominantly()>>
+                    <<set $pc.encounter_dialogue_tags to ["pc", "be dominant"]>>
+                    <<set _domtalk to setup.Dialogue.encounter_lines($pc).length > 0>>
+                <<else>>
+                    <<set _domtalk to false>>
+                <</if>>
+                <<unset $pc.encounter_dialogue_tags>>
+                <<if (_anytalk + _subtalk + _domtalk) gt 1 and !_dirtytalkexpanded>>
+                    <<set _btndirtytalkexpandid to "#"+_dirtytalkid>>
+                    <<capture _btndirtytalkexpandid,_talkpartner>>
+                        <span class="button-sexact-talk new-size-button nokeys">
+                            <<button "Dirty talk...">>
+                                <<set _dirtytalkexpanded to true>>
+                                <<replace _btndirtytalkexpandid>>
+                                    <<reworkencounterdirtytalkmenu _talkpartner>>
+                                <</replace>>
+                            <</button>>
+                        </span>
+                    <</capture>>
+                <<else>>
+                    <<capture _talkpartner>>
+                        <<if _subtalk>>
+                            <span class="button-sexact-talk button new-size-button nokeys">
+                                <<button "Talk submissively" EncounterRework>>
+                                    <<set $pc.encounter_dialogue_tags to ["pc", "be submissive"]>>
+                                    <<set $pc.dirtytalkqueued to [_partner.name, []]>>
+                                    <<script>>
+                                        let enc = V.encounter;
+                                        let skill = "Submission";
+                                        if (!(skill in enc.skills_used))
+                                            enc.skills_used[skill] = 1;
+                                        else
+                                            enc.skills_used[skill]++;
+                                    <</script>>
+                                    <<run $encounter.advance_round()>>
+                                <</button>>
+                            </span>
+                        <</if>>
+                        <<if _domtalk>>
+                            <span class="button-sexact-talk button new-size-button nokeys">
+                                <<button "Talk dominantly" EncounterRework>>
+                                    <<set $pc.encounter_dialogue_tags to ["pc", "be dominant"]>>
+                                    <<set $pc.dirtytalkqueued to [_partner.name, []]>>
+                                    <<script>>
+                                        let enc = V.encounter;
+                                        let skill = "Dominance";
+                                        if (!(skill in enc.skills_used))
+                                            enc.skills_used[skill] = 1;
+                                        else
+                                            enc.skills_used[skill]++;
+                                    <</script>>
+                                    <<run $encounter.advance_round()>>
+                                <</button>>
+                            </span>
+                        <</if>>
+                        <<if _anytalk>>
+                            <span class="button-sexact-talk button">
+                                <<button "Dirty talk" EncounterRework>>
+                                    <<set $pc.dirtytalkqueued to [_partner.name, []]>>
+                                    <<run $encounter.advance_round()>>
+                                <</button>>
+                            </span>
+                        <</if>>
+                    <</capture>>
+                <</if>>
+            </span>
+        <</if>>
+    <<else>>
+        <<if setup.can_record_encounter()>>
+            <span class="new-size-button nokeys">
+                <<button "Record yourself" "EncounterRework">><<run $pc.solo_record_encounter()>><</button>>
+            </span>
+        <</if>>
+        <<if setup.can_record_encounter() && !_args[0].is_pc>>
+            <span class="new-size-button nokeys">
+                <<button "Ask to record" "EncounterRework">><<run $pc.ask_to_record_encounter(_args[0])>><</button>>
+            </span>
+        <</if>>
+    <</if>>
+<</if>>
+<</widget>>
+<<widget "reworkencounterclothmenu">>
+    <<set _clothpartner to _args[0] || _partner>>
+    <<set _clothactid to "clothact" + _clothpartner.name.replace(/[^a-zA-Z0-9_-]/g, "_")>>
+    <span @id="_clothactid" style="display: flex; flex-flow: row wrap;">
+        <<set _clothacts to $pc.available_clothing_actions(_clothpartner)>>
+        <<set _offeredexpansion to false>>
+        <<for _j to 0; _j lt _clothacts.length; _j++>>
+            <<set _clothact to _clothacts[_j]>>
+            <<capture _clothact,_clothpartner,_partner,_clothactid>>
+                <<if _clothact.action != "remove all" && !$encounter.expandedclothes.includes(_clothpartner.name)>>
+                    <span class="button-sexact-clothes new-size-button nokeys">
+                        <<button "Displace clothes...">>
+                            <<set _btnclothactid to "#"+_clothactid>>
+                            <<run $encounter.expandedclothes.push(_clothpartner.name)>>
+                            <<replace _btnclothactid>><<reworkencounterclothmenu _clothpartner>><</replace>>
+                        <</button>>
+                        <<break>>
+                    </span>
+                <<elseif _clothact.action != "remove all">>
+                    <span class="button-sexact-clothes new-size-button nokeys">
+                        <<button _clothact.button "EncounterRework">><<run $pc.do_clothing_act(_clothact, _clothpartner)>><</button>>
+                    </span>
+                <</if>>
+            <</capture>>
+        <</for>>
+    </span>
+<</widget>>
+<<widget "reworkencounterbondagemenu">>
+    <<set _bondagepartner to _args[0] || _partner>>
+    <<set _bondageactid to "bondageact" + _bondagepartner.name.replace(/[^a-zA-Z0-9_-]/g, "_")>>
+    <span @id="_bondageactid" style="display: flex; flex-flow: row wrap;">
+        <<set _bondacts to $pc.available_bondage_acts(_bondagepartner)>>
+        <<set _offeredexpansion to false>>
+        <span class="button-sexact-bondage new-size-button nokeys">
+            <<for _j to 0; _j lt _bondacts.length; _j++>>
+                <<set _bondact to _bondacts[_j]>>
+                <<capture _bondact,_bondagepartner,_partner,_bondageactid>>
+                    <<if $encounter.expandedbondage.includes(_bondagepartner.name) or !_offeredexpansion>>
+                        <<if !$encounter.expandedbondage.includes(_bondagepartner.name)>>
+                            <<button "Bondage...">>
+                                <<set _btnbondactid to "#"+_bondageactid>>
+                                <<run $encounter.expandedbondage.push(_bondagepartner.name)>>
+                                <<replace _btnbondactid>><<reworkencounterbondagemenu _bondagepartner>><</replace>>
+                            <</button>>
+                            <<break>>
+                        <<else>>
+                            <<button _bondact.button "EncounterRework">><<run $pc.do_bondage_act(_bondact, _bondagepartner)>><</button>>
+                        <</if>>
+                    <</if>>
+                <</capture>>
+            <</for>>
+        </span>
+    </span>
+<</widget>>
+<<widget "reworkencountertoysmenu">>
+    <span id="encounter-toys-menu" style="display: flex; flex-flow: row wrap;">
+        <<set _toypartner to _args[0] || _partner>>
+        <<set _toyacts to $pc.available_toy_actions($pc)>>
+        <<set _firstequip to false>>
+        <<for _k to 0; _k lt _toyacts.length; _k++>>
+            <<set _toyact to _toyacts[_k]>>
+            <<set _hl to (_toyact.actiontype == "equip toy" ? "button-sexact-equiptoy new-size-button nokeys" : "button-sexact-unequiptoy new-size-button nokeys")>>
+            <<if _toyact.actiontype == "equip toy">>
+                <<if !$encounter.show_toy_actions>>
+                    <<if !_firstequip>>
+                        <<set _firstequip to true>>
+                        <<highlight _hl>>
+                            <<button "Equip toy...">>
+                                <<set $encounter.show_toy_actions to true>>
+                                <<replace "#encounter-toys-menu">><<reworkencountertoysmenu _toypartner>><</replace>>
+                            <</button>>
+                        <</highlight>>
+                    <</if>>
+                <<else>>
+                    <<highlight _hl>>
+                        <<capture _toyact>><<button _toyact.action "EncounterRework">><<set $encounter.show_toy_actions to false>><<run $pc.do_toy_action(_toyact, $pc)>><</button>><</capture>>
+                    <</highlight>>
+                <</if>>
+            <</if>>
+        <</for>>
+        <<for _k to 0; _k lt _toyacts.length; _k++>>
+            <<set _toyact to _toyacts[_k]>>
+            <<set _hl to (_toyact.actiontype == "equip toy" ? "button-sexact-equiptoy new-size-button nokeys" : "button-sexact-unequiptoy new-size-button nokeys")>>
+            <<if _toyact.actiontype == "unequip toy">>
+                <<highlight _hl>>
+                    <<capture _toyact>><<button _toyact.action "EncounterRework">><<run $pc.do_toy_action(_toyact, $pc)>><</button>><</capture>>
+                <</highlight>>
+            <</if>>
+        <</for>>
+        <<for _k to 0; _k lt _toyacts.length; _k++>>
+            <<set _toyact to _toyacts[_k]>>
+            <<set _hl to "button-sexact-unequiptoy new-size-button nokeys">>
+            <<if _toyact.actiontype == "disable toy">>
+                <<highlight _hl>>
+                    <<capture _toyact>><<button _toyact.action "EncounterRework">><<run $pc.do_toy_action(_toyact, $pc)>><</button>><</capture>>
+                <</highlight>>
+            <</if>>
+        <</for>>
+    </span>
+<</widget>>
+<<widget "reworkencounteractmenu">>
+    <div style="display: flex; border-radius: 2%; border-bottom: solid; background: rgb(180 100 180 / 5%); flex-flow: row wrap; height: 194px; align-content:flex-start; overflow-y: scroll;">
+        <<set _actmenupartner to _args[0] || _partner>>
+        <<reworkencounterdirtytalkmenu _actmenupartner>>
+        <<if !$pc.has_bondage("hand lock")>>
+            <<reworkencounterclothmenu _actmenupartner>>
+            <<reworkencounterbondagemenu _actmenupartner>>
+            <<reworkencountertoysmenu _actmenupartner>>
+        <</if>>
+    </div>
+<</widget>>
+<<widget "reworkencounterreact">>
+<div style="width: 100%; height: 78px;">
+<span class="bold">Stop or ask...</span><br>
+<<if $encounter.about_to_orgasm().length gt 0>>
+    <<set _partner to $encounter.about_to_orgasm()[0]>>
+    <<highlight "narrate-sexact-cum">><<if $encounter.anonymous>><<anonnamec _partner aoran>><<else>><<anonorfirstnamec _partner>><</if>> seems to be on the verge of cumming!<</highlight>>
+<<elseif $pc.cum_covering.mouth>>
+    <<highlight "narrate-sexact-cum">>Your mouth is full of warm, thick, salty-sweet cum!<</highlight>>
+<<elseif $pc.watersports and $pc.watersports.length gt 0>>
+    <<highlight "narrate-sexact-pee">>
+        <<if $pc.is_pee_willing>>
+            You relax your bladder. Your piss is about to flow.
+        <<else>>
+            Your piss is about to flow!
+        <</if>>
+    <</highlight>>
+<<elseif $pc.arousal() gte $pc.max_arousal()>>
+    <<set _partner to $pc.engaged_partner()>>
+    <<if $pc.arousal() gte $pc.max_arousal() and _partner and !_partner.madecumrequest>>
+        <<set _cumlocs to $pc.available_cum_locations(_partner)>>
+        <<if setup.cum_locations_includes(_cumlocs, "vagina")>>
+            <<dirtytalkcuminside _partner>>
+        <<elseif setup.cum_locations_includes(_cumlocs, "anus")>>
+            <<dirtytalkcuminsideass _partner>>
+        <<elseif !setup.cum_locations_includes(_cumlocs, "mouth") and setup.cum_locations_includes(_cumlocs, "face")>>
+            <<dirtytalkcumfacial _partner>>
+        <</if>>
+    <</if>>
+<<elseif $pc.attempted_penetration and !$pc.attempted_penetration?.seen and $pc.has_part("penis")>>
+    <<set _partner to $encounter.pobj($pc.attempted_penetration?.target)>>
+    You're poised to enter <<anonorfirstname _partner>>.
+    <<if $pc.attempted_penetration?.claim_bc>>
+        <<if $pc.attempted_penetration?.believes_bc>>
+            <<highlight unbad>><<psc>> <<conj believe>> you've had a vasectomy.<</highlight>>
+        <<else>>
+            <<highlight bad>><<psc>> <<conj "don't">> trust that you've had a vasectomy.<</highlight>>
+        <</if>>
+    <</if>>
+    <<if $pc.attempted_penetration?.reluctantly_not_use_condom>>
+        <<highlight unbad>><<psc>> reluctantly <<conj agree>> to not use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.reluctantly_use_condom>>
+        <<highlight unbad>><<psc>> <<conj agree>> to let you use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.insist_remove_condom>>
+        <<highlight bad>><<psc>> <<conj "don't">> want to continue with a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.insist_condom>>
+        <<highlight bad>><<psc>> <<conj "don't">> want to continue unless you use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.request_condom and !$pc.condom>>
+        <<highlight ungood>><<psc>> would like you to use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.request_remove_condom and ($pc.condom or _partner.condom)>>
+        <<highlight ungood>><<psc>> <<conj want>> you to remove your condom.<</highlight>>
+        <<if setup.Pregnancy.can_get_pregnant(_partner)>>
+            <<if setup.Pregnancy.on_birth_control(_partner)>>
+                <<psc>> <<conj say>> <<pss>> on the pill.
+            <<elseif setup.Pregnancy.has_iud(_partner)>>
+                <<psc>> <<conj say>> <<ps>> <<conj have>> an IUD.
+            <</if>>
+        <<elseif setup.Pregnancy.has_vasectomy(_partner)>>
+            <<psc>> <<conj say>> <<pshas>> had a vasectomy.
+        <</if>>
+    <<else>>
+        <<psc>> <<conj await>> your next move.
+    <</if>>
+<<elseif $pc.attempted_penetration and !$pc.attempted_penetration?.seen and $pc.has_part("vagina")>>
+    <<set _partner to $encounter.pobj($pc.attempted_penetration?.target)>>
+    You have <<anonorfirstname _partner>> poised to enter you.
+    <<if $pc.attempted_penetration?.claim_bc>>
+        <<if $pc.attempted_penetration?.believes_bc>>
+            <<highlight unbad>><<psc>> <<conj believe>> you're protected.<</highlight>>
+        <<else>>
+            <<highlight bad>><<psc>> <<conj "don't">> trust that you're protected.<</highlight>>
+        <</if>>
+    <</if>>
+    <<if $pc.attempted_penetration?.reluctantly_not_use_condom>>
+        <<highlight unbad>><<psc>> reluctantly <<conj agree>> to not use a condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.reluctantly_use_condom>>
+        <<highlight unbad>><<psc>> <<conj agree>> to use a condom<</highlight>>
+        <<if !$pc.attempted_penetration?.offered_condom && !_partner.has_condom()>>
+            , but <<ps>> <<conj "don't">> have one
+        <</if>>.
+    <<elseif $pc.attempted_penetration?.insist_remove_condom>>
+        <<highlight bad>><<psc>> really <<conj want>> to remove the condom.<</highlight>>
+    <<elseif $pc.attempted_penetration?.insist_condom>>
+        <<highlight bad>><<psc>> <<conj "don't">> want to continue unless <<ps>> can use a condom.<</highlight>>
+    <</if>>
+    <<if $pc.attempted_penetration?.request_condom and !$pc.attempted_penetration?.insist_condom>>
+        <<if !_partner.condom>>
+            <<if _partner.has_condom()>>
+                <<psc>> <<conj intend>> to use a condom.
+            <<else>>
+                <<psc>> <<conj want>> to use a condom, but <<conj "don't">> have one.
+            <</if>>
+        <<else>>
+            <<pssc>> wearing <<aoran _partner.condom>> <<= _partner.condom>>.
+        <</if>>
+    <<elseif !$pc.attempted_penetration?.request_condom and !$pc.attempted_penetration?.insist_remove_condom>>
+        <<psc>> <<conj "don't">> care to use a condom.
+        <<if setup.Pregnancy.can_get_pregnant(_partner)>>
+            <<if setup.Pregnancy.on_birth_control(_partner)>>
+                <<psc>> <<conj say>> <<pss>> on the pill.
+            <<elseif setup.Pregnancy.has_iud(_partner)>>
+                <<psc>> <<conj say>> <<ps>> <<conj have>> an IUD.
+            <</if>>
+        <<elseif setup.Pregnancy.has_vasectomy(_partner)>>
+            <<psc>> <<conj say>> <<pshas>> had a vasectomy.
+        <</if>>
+    <</if>>
+<<elseif $pc.attempted_bondage?.interrupt>>
+    <<highlight narrate-sexact-bondage>>
+        <<switch $pc.attempted_bondage.act>>
+            <<case "bind to">>
+                <<encounternamec _doer>> <<conjname _doer want>> to secure you<<furniturelabel $pc.attempted_bondage.furniture>>.
+            <<case "bind hands">>
+                <<encounternamec _doer>> <<conjname _doer want>> to bind your hands.
+            <<case "gag">>
+                <<encounternamec _doer>> <<conjname _doer want>> to gag you.
+        <</switch>>
+    <</highlight>>
+<<else>>
+<br>
